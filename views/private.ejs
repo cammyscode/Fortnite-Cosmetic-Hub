@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu do Usuário</title>
+
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/stylesBundle.css" />
+    <link rel="stylesheet" href="./styles/styles.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=brightness_alert"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+      rel="stylesheet"
+    />
+    <script id="userdata-script"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      :root {
+        --primary-color: #9e52eb;
+        --border-first: #464444;
+        --back-color: #2b0057;
+        --shadow-color: rgba(0, 0, 0, 0.4);
+        --principal-color: #fff;
+        --glass: rgba(81, 21, 140, 0.35);
+        --new-color: #812bd6;
+        --grey-opacity: rgba(102, 99, 99, 0.685);
+        --menu-bg: rgba(60, 40, 65, 0.9);
+        --highlight-color: #b08bb9;
+        --og-blue: #009cff;
+        --og-purple: #5b2dff;
+        --og-dark: #0a0f1d;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          var(--back-color),
+          var(--primary-color)
+        );
+        background-attachment: fixed;
+        font-family: "Trebuchet MS", Arial, sans-serif;
+        color: var(--principal-color);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ===================== CONTAINER E MAIN ===================== */
+      .user-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .user-box {
+        width: 90%;
+        max-width: 1100px;
+        height: 90vh;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 18px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+        display: grid;
+        grid-template-columns: 330px 1fr;
+        overflow: hidden;
+        padding: 0;
+        animation: fadeIn 0.7s ease-out;
+      }
+
+      /* ===================== LADO ESQUERDO ===================== */
+
+      .left-panel {
+        background: linear-gradient(
+          160deg,
+          rgba(0, 156, 255, 0.25),
+          rgba(91, 45, 255, 0.25)
+        );
+        border-right: 2px solid rgba(255, 255, 255, 0.15);
+        padding: 25px;
+        text-align: center;
+        position: relative;
+      }
+      /* Ícone logout */
+      #logout {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        font-size: 32px;
+        cursor: pointer;
+        transition: 0.3s;
+        background: none;
+      }
+
+      /* FOTO */
+      .user-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 4px solid var(--og-blue);
+        box-shadow: 0 0 20px var(--og-blue);
+        object-fit: cover;
+      }
+
+      /* BOTÃO trocar foto */
+      #photoInput {
+        margin-top: 12px;
+        color: #fff;
+      }
+
+      /* NOME */
+      .username {
+        font-size: 28px;
+        text-shadow: 0 0 10px #000;
+        margin-top: 12px;
+      }
+
+      /* VBucks */
+      .vbucks-box {
+        margin: 20px auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        padding: 10px 18px;
+
+        border-radius: 40px;
+        background: linear-gradient(90deg, #005eff, #8a2be2);
+        box-shadow: 0 0 15px #000;
+      }
+
+      .vbucks-box img {
+        width: 32px;
+      }
+
+      /* ===================== LADO DIREITO ===================== */
+
+      /*Menu para lojas*/
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 10;
+        min-width: 250px;
+        margin-top: 5px;
+        background-color: var(--menu-bg);
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        display: none;
+      }
+
+      /* Lista de lojas */
+      .menu-list {
+        list-style: none;
+        padding: 10px 0;
+        margin: 0;
+      }
+
+      .menu-list li {
+        display: block;
+        padding: 10px 20px;
+        text-decoration: none;
+        color: var(--principal-color);
+        transition: background-color 0.2s;
+        white-space: nowrap;
+      }
+      .menu-list li:hover {
+        background-color: var(--highlight-color);
+        cursor: pointer;
+      }
+      .show {
+        display: block;
+      }
+
+      .right-panel {
+        padding: 30px;
+        overflow-y: auto;
+      }
+
+      /* Cabeçalho do menu */
+      .right-panel h2 {
+        font-size: 28px;
+        border-left: 6px solid var(--og-blue);
+        padding-left: 10px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 15px black;
+      }
+
+      /* ===================== ITENS ADQUIRIDOS ===================== */
+
+      .item-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .item-list li {
+        padding: 14px;
+        font-size: 18px;
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        margin-bottom: 12px;
+        transition: 0.25s;
+        box-shadow: 0 4px 10px #00000040;
+      }
+
+      .item-list li:hover {
+        background: rgba(0, 156, 255, 0.45);
+        transform: scale(1.03);
+      }
+
+      /* ===================== ANIMAÇÕES ===================== */
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ===================== LOJA ===================== */
+
+      .hidden-store,
+      .hidden-bundles {
+        display: none;
+      }
+
+      /* ===================== RESPONSIVO ===================== */
+
+      @media (max-width: 900px) {
+        .user-box {
+          grid-template-columns: 1fr;
+          height: auto;
+          padding-bottom: 30px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container-header">
+      <header>
+        <nav>
+          <img
+            id="logo"
+            src="../images/fortnite-logo-.png"
+            alt="Fortnite Logo"
+          />
+
+          <div class="dropdown">
+            <button class="store-btn" id="btn-store">
+              Loja
+              <span class="arrow"><i class="fa-solid fa-caret-down"></i></span>
+            </button>
+
+            <div class="dropdown-menu" id="menu-popup">
+              <ul class="menu-list">
+                <li id="all-cosmetics">Todos os Itens</li>
+                <li id="pack">Pacotes</li>
+              </ul>
+            </div>
+          </div>
+          <button id="btn-profile">Meu Perfil</button>
+          <button id="btn-public">Usuários</button>
+        </nav>
+      </header>
+    </div>
+
+    <div id="general">
+      <div class="user-panel">
+        <div class="user-box">
+          <!-- LADO ESQUERDO -->
+          <div class="left-panel">
+            <!-- Logout -->
+            <button id="logout">
+              <span class="material-symbols-outlined"> logout </span>
+            </button>
+
+            <!-- Foto -->
+            <img
+              id="profilePhoto"
+              src="https://i.imgur.com/6VBx3io.png"
+              class="user-photo"
+            />
+
+            <!-- Input -->
+            <input type="file" id="photoInput" accept="image/*" />
+
+            <!-- Nome -->
+            <div class="username"><%= name %></div>
+
+            <!-- V-Bucks -->
+            <div class="vbucks-box">
+              <img src="./images/v-buck.png" alt="Vbucks" />
+              <div class="username"><%= vbucks %></div>
+            </div>
+          </div>
+
+          <!-- LADO DIREITO -->
+          <div class="right-panel">
+            <h2>Inventário do Jogador</h2>
+
+            <ul class="item-list">
+              <li>Skin: Renegade Raider</li>
+              <li>Skin: Black Knight</li>
+              <li>Picareta: AC/DC</li>
+              <li>Asa-delta: Mako Glider</li>
+              <li>Emote: Floss</li>
+              <li>Emote: Ride the Pony</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loja -->
+    <div class="hidden-store">
+      <div id="local-container" class="container">
+        <h1>LOJA DE ITENS</h1>
+        <div class="container-cosmetics">
+          <main>
+            <section id="view-home" class="view active panel">
+              <div class="controls">
+                <div class="selection">
+                  <div class="input-search">
+                    <input
+                      id="search-name"
+                      type="text"
+                      placeholder="Buscar por nome..."
+                    />
+                    <button type="submit" class="btn-search" tabindex="-1">
+                      <span
+                        class="icon"
+                        aria-hidden="true"
+                        style="width: 19px; height: 20px; line-height: 20px"
+                        ><i id="search" class="fa-solid fa-magnifying-glass"></i
+                      ></span>
+                    </button>
+                    <input id="search-date" type="date" />
+                  </div>
+                  <div class="select">
+                    <label class="filter"
+                      ><input id="filter-new" type="checkbox" /> Apenas
+                      novos</label
+                    >
+                    <label class="filter"
+                      ><input id="filter-for-sale" type="checkbox" /> Apenas à
+                      venda</label
+                    >
+                    <label class="filter"
+                      ><input id="filter-on-sale" type="checkbox" /> Apenas em
+                      promoção</label
+                    >
+                  </div>
+                </div>
+                <div class="other-filters">
+                  <select id="filter-type">
+                    <option value="">Todos os tipos</option>
+                  </select>
+                  <select id="filter-rarity">
+                    <option value="">Qualquer raridade</option>
+                  </select>
+
+                  <select id="per-page" style="margin-left: auto">
+                    <option value="5">5 / página</option>
+                    <option value="15" selected>15 / página</option>
+                    <option value="50">50 / página</option>
+                  </select>
+                </div>
+              </div>
+              <div class="pagination">
+                <button id="prev-page" class="btn ghost small">
+                  <i class="fa-solid fa-caret-left"></i>
+                </button>
+                <div id="page-info" class="muted">Página 1</div>
+                <button id="next-page" class="btn ghost small">
+                  <i class="fa-solid fa-caret-right"></i>
+                </button>
+              </div>
+              <div class="cosmetics-gallery" id="gallery"></div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="hidden-bundles">
+      <div id="container-gallery">
+        <h1>Bundles em Destaque</h1>
+        <section id="gallery-bundles" class="gallery"></section>
+      </div>
+    </div>
+        <!-- Rodapé -->
+    <footer>
+      Esta é uma simulação para o desafio de estágio da empresa ESO.
+      Desenvolvido por Camille Almeida Silva.
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/bundles.js"></script>
+    <script>
+      // SELEÇÃO DE ELEMENTOS
+      const profileContainer = document.querySelector(".user-panel");
+      const storeContainer = document.querySelector(".hidden-store");
+      const bundlesContainer = document.querySelector(".hidden-bundles");
+      const btnAllCosmetics = document.querySelector("#all-cosmetics");
+      const btnBundles = document.querySelector("#pack");
+      const logoutButton = document.querySelector("#logout");
+      const photoInput = document.getElementById("photoInput");
+      const dropdownMenu = document.getElementById("menu-popup");
+      const storeBtn = document.querySelector(".store-btn");
+      const btnProfile = document.getElementById("btn-profile");
+
+      storeContainer.style.display = "none";
+      profileContainer.style.display = "flex";
+
+      //Abrir e fechar dropdown
+      storeBtn.addEventListener("click", (event) => {
+        dropdownMenu.classList.toggle("show");
+        event.stopPropagation();
+      });
+      document.addEventListener("click", (event) => {
+        if (
+          !dropdownMenu.contains(event.target) &&
+          dropdownMenu.classList.contains("show")
+        ) {
+          dropdownMenu.classList.remove("show");
+        }
+      });
+
+      // Ir para a Loja de Cosmetics
+      btnAllCosmetics.addEventListener("click", () => {
+        profileContainer.style.display = "none";
+        bundlesContainer.style.display = "none";
+        storeContainer.style.display = "block";
+        dropdownMenu.classList.remove("show");
+      });
+
+      // Ir para a Loja de Bundles
+      btnBundles.addEventListener("click", () => {
+        profileContainer.style.display = "none";
+        storeContainer.style.display = "none";
+        bundlesContainer.style.display = "flex";
+        dropdownMenu.classList.remove("show");
+      });
+
+      // Ir para o Perfil
+      btnProfile.addEventListener("click", () => {
+        storeContainer.style.display = "none";
+        profileContainer.style.display = "flex";
+      });
+
+      // Fazer logout
+      logoutButton.addEventListener("click", () => {
+        window.location.href = "/logout";
+      });
+
+      // Trocar foto de perfil
+      photoInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("profilePhoto").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    </script>
+  </body>
+</html>

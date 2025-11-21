@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entrar Cadastrar | Fortnite</title>
+    <script src="./js/header.js" defer></script>
+    <script src="./js/users.js" ></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <style>
+      :root {
+        --border-first-color: #464444;
+        --principal-color: #fff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Oswald", sans-serif;
+      }
+
+      body {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url("../images/fortnite-background-3.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      .card {
+        background: var(--principal-color);
+        width: 450px;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+        flex-direction: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .two-panels {
+        display: flex;
+        gap: 30px;
+        width: 950px;
+        padding: 40px;
+        justify-content: center;
+      }
+
+      .panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      #bar {
+        border-right: 1px solid grey;
+        padding-right: 30px;
+      }
+      #login-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 25px;
+      }
+
+      form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+      }
+
+      .label-float {
+        position: relative;
+        width: 100%;
+      }
+
+      .label-float input {
+        width: 100%;
+        padding: 12px 10px;
+        font-size: 18px;
+        border-radius: 5px;
+        border: 1px solid var(--border-first-color);
+      }
+
+      .label-float label {
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        color: #555;
+        transition: 0.2s ease;
+        pointer-events: none;
+      }
+
+      .label-float input:focus + label,
+      .label-float input:valid + label {
+        top: -10px;
+        background: var(--principal-color);
+        padding: 0 5px;
+        font-size: 13px;
+        color: #000;
+      }
+
+      .entry {
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        background: rgb(126, 7, 7);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .entry:hover {
+        box-shadow: 0px 0px 10px rgb(126, 7, 7);
+      }
+      .entry-register {
+        display: flex;
+        gap: 10px;
+        font-size: 20px;
+      }
+
+      .fa-eye,
+      .fa-eye-slash {
+        position: absolute;
+        right: 10px;
+        margin-top: -8px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        top: 38px;
+      }
+      .ghost-success {
+        background-color: green;
+        width: 400px;
+        text-align: center;
+        justify-content: center;
+        padding: 10px;
+        color: rgb(0, 31, 0);
+        margin-bottom: 25px;
+        display: none;
+      }
+      #show-login,
+      #show-register {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        .two-panels {
+          flex-direction: column;
+          width: 450px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="card two-panels">
+        <!-- LOGIN -->
+        <div class="panel" id="bar">
+          <h1>Fazer Login</h1>
+          <form action="/login" method="POST" id="entry-account">
+            <div class="label-float">
+              <input type="text" id="entry-email" name="email" required />
+              <label id="label-login">e-mail</label>
+            </div>
+
+            <div class="label-float">
+              <input
+                type="password"
+                id="entry-password"
+                name="password"
+                required
+              />
+              <label class="label-pass">senha</label>
+              <i class="fa-regular fa-eye" id="toggle-pass"></i>
+            </div>
+
+            <button class="entry" id="entry-log" type="submit">Entrar</button>
+          </form>
+        </div>
+
+        <!-- CADASTRO -->
+        <div class="panel">
+          <h1>Cadastrar</h1>
+          <div class="ghost-success">Cadastro realizado com sucesso!</div>
+
+          <form action="/signup" id="signup-form">
+            <div class="label-float">
+              <input type="text" id="name" name="name" required />
+              <label id="label-name">nome</label>
+            </div>
+
+            <div class="label-float">
+              <input type="text" id="email" name="email" required />
+              <label id="label-email">e-mail</label>
+            </div>
+
+            <div class="label-float">
+              <input
+                type="password"
+                id="password"
+                class="pass"
+                name="password"
+                required
+              />
+              <label class="label-pass">senha</label>
+              <i class="fa-regular fa-eye"></i>
+            </div>
+
+            <button type="submit" id="entry-reg" class="entry">
+              Cadastrar
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Variáveis do Painel de Cadastro
+      const inputPasswordRegister = document.getElementById("password");
+      const inputEmailRegister = document.getElementById("email");
+      const labelPassRegister = document.querySelector(
+        "#signup-form .label-pass"
+      );
+      const labelEmailRegister = document.getElementById("label-email");
+      const btnRegister = document.getElementById("entry-reg");
+      const ghostSuccess = document.querySelector(".ghost-success");
+      let responseText = "";
+
+      //BOTÃO DE VER SENHA
+      document.querySelectorAll(".label-float .fa-eye").forEach((eye) => {
+        eye.addEventListener("click", () => {
+          let input = eye.parentElement.querySelector("input");
+
+          if (input.type === "password") {
+            input.type = "text";
+            eye.classList.remove("fa-regular", "fa-eye");
+            eye.classList.add("fa-solid", "fa-eye-slash");
+          } else {
+            input.type = "password";
+            eye.classList.remove("fa-solid", "fa-eye-slash");
+            eye.classList.add("fa-regular", "fa-eye");
+          }
+        });
+      });
+
+      // Validação e Envio do Formulário de Cadastro
+      document
+        .getElementById("signup-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          // Resetar estilos de erro
+          labelPassRegister.innerHTML = "senha";
+          labelPassRegister.style.color = "#555";
+          inputPasswordRegister.style.borderColor = "var(--border-first-color)";
+          labelEmailRegister.innerHTML = "e-mail";
+          labelEmailRegister.style.color = "#555";
+          inputEmailRegister.style.borderColor = "var(--border-first-color)";
+          ghostSuccess.style.display = "none";
+
+          if (inputPasswordRegister.value.length < 7) {
+            labelPassRegister.innerHTML =
+              "<strong>Senha *Insira no mínimo 7 caracteres </strong>";
+            labelPassRegister.style.color = "red";
+            inputPasswordRegister.style.borderColor = "red";
+            return;
+          }
+          const name = document.getElementById("name").value;
+          const email = inputEmailRegister.value;
+          const password = inputPasswordRegister.value;
+
+          async function parseResponse(response) {
+            const contentType = response.headers.get("content-type");
+
+            if (contentType && contentType.includes("application/json")) {
+              return await response.json();
+            } else {
+              const text = await response.text();
+              return {
+                ok: false,
+                message:
+                  "Erro inesperado do servidor. Conteúdo: " +
+                  text.substring(0, 50),
+              };
+            }
+          }
+
+          try {
+            // ENVIAR DADOS PARA O BACKEND (FETCH)
+            let response;
+            response = await fetch("/signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, email, password }),
+            });
+
+            // 3. PROCESSAR RESPOSTA JSON
+            const data = await parseResponse(response);
+
+            if (response.ok) {
+              ghostSuccess.textContent =
+                "Cadastro realizado com sucesso! Faça Login para entrar.";
+              ghostSuccess.style.backgroundColor = "lightgreen";
+              ghostSuccess.style.color = "darkgreen";
+              ghostSuccess.style.display = "block";
+              setTimeout(() => {
+                window.location.href = "/register.html";
+              }, 1500);
+              
+            } else {
+              const errorMsg =
+                data.message || "Erro fatal do servidor. Tente novamente.";
+            }
+          } catch (error) {
+            console.error("Erro de Fetch/Conexão:", error);
+            ghostSuccess.textContent = "Erro de conexão. Tente novamente.";
+          }
+        });
+    </script>
+  </body>
+</html>

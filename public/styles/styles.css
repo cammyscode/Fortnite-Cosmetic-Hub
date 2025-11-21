@@ -1,0 +1,487 @@
+:root {
+  --primary-color: #9e52eb;
+  --border-first: #464444;
+  --back-color: #2b0057;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --principal-color: #fff;
+  --glass: #51158c;
+  --new-color: #812bd6;
+  --grey-opacity: rgba(102, 99, 99, 0.685);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  background: linear-gradient(135deg, var(--back-color), var(--primary-color));
+  background-attachment: fixed;
+  flex-direction: column;
+  color: #f4f4f9;
+  min-height: 100vh;
+}
+
+/* ===================== MAIN - COSMETICS ===================== */
+main {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 18px;
+  color: #9ea6ff;
+  text-shadow: 0 0 12px #6c63ffaa;
+}
+
+/* ===================== CONTROLS / BARRA DE FILTROS ===================== */
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 20px;
+}
+
+/* Linha do search e checkboxes */
+.selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  width: 100%;
+  align-items: center;
+}
+
+/* Campo de busca + botão */
+.input-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px 12px;
+  border-radius: 8px;
+  flex: 1;
+  min-width: 240px;
+}
+
+.input-search input[type="text"],
+.input-search input[type="date"] {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 15px;
+}
+
+.btn-search {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-search:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* Checkboxes */
+.select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filter {
+  font-size: 25px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+#filter-type option{
+  background-color: #6200ea7c;
+}
+#filter-rarity option{
+  background-color: #6200ea7c;
+}
+#per-page option{
+  background-color: #6200ea7c;
+}
+
+/* ===================== OUTROS FILTROS (selects) ===================== */
+
+.other-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+.other-filters select,
+#per-page {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: white;
+  font-size: 18px;
+  outline: none;
+}
+
+/* ===================== BOTÕES / PANELS / BOXES ===================== */
+.btn.ghost {
+  background-color: var(--shadow-color);
+  border: 1px solid #6c63ff;
+}
+
+.btn.ghost:hover {
+  background-color: var(--shadow-color);
+}
+
+.btn.small {
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  background-color: var(--shadow-color);
+}
+
+/*PANELS / BOXES*/
+.panel {
+  background: var(--back-color);
+  border: 1px solid #2b2f4a;
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 3px 15px #00000033;
+}
+
+.panel h4 {
+  color: #9ea6ff;
+  margin-bottom: 8px;
+  font-size: 25px;
+}
+
+.muted {
+  color: #aaa;
+  font-size: 25px;
+}
+
+/* ===================== PAGINAÇÃO ===================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+.other-filters {
+  display: flex;
+  gap: 15px;
+}
+
+/* ===================== GALERIA E COSMETICS ===================== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 97%;
+  margin: 10px auto;
+  box-shadow: 0px 2px 20px var(--shadow-color);
+  background-color: none;
+  border-radius: 15px;
+}
+.container-cosmetics {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  width: 100%;
+}
+.cosmetics-gallery {
+  width: 100%;
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 30px;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ===================== CARD BASE ===================== */
+
+.card {
+  position: relative;
+  width: 180px;
+  height: 300px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffffff15, #00000030);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+}
+
+/* ===================== IMAGEM DO CARD ===================== */
+
+.card img {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+}
+
+/* ===================== ÁREA DE TEXTO ===================== */
+
+.data-card {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  text-align: left;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Nome do item */
+.data-card p {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  margin: 8px 0 0 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Categoria (ex: Accessório, Emote...) */
+.data-card .sub {
+  font-size: 13px;
+  opacity: 0.85;
+  color: #d5d5d5;
+  margin-top: -4px;
+}
+
+/* ===================== BADGE NEW ===================== */
+
+.status-badge {
+  position: absolute;
+  top: 0;
+  margin-top: -10px;
+  right: 8px;
+  padding: 6px 12px;
+  border-radius: 500px;
+  background: #ff2b2b;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* ===================== PREÇO ===================== */
+
+.price-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 45px;
+  width: 100%;
+}
+
+.price-container img#vbuck {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.price-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
+
+.in-shop-cosmetics {
+  background: none;
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* PREÇO INDISPONÍVEL */
+.price-disabled {
+  margin-top: 8px;
+  font-size: 15px;
+  color: #b5b5b5;
+  text-align: center;
+}
+
+/* Ícone de V-Bucks */
+#vbuck {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  margin-top: 4px;
+}
+
+/* Preço */
+.price-value {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.fa-solid.fa-cart-shopping {
+  color: white;
+  font-size: 20px;
+}
+.fa-solid.fa-cart-shopping:hover {
+  cursor: pointer;
+}
+
+.price-container:hover {
+  width: 100%;
+  transform: translateY(-2px);
+  background-color: var(--secondary-color);
+  cursor: pointer;
+  border-radius: 10px;
+  background-color: var(--grey-opacity);
+}
+.price-disabled {
+  border: 1px solid white;
+  margin-top: -15px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  font-weight: bolder;
+}
+
+.price-value {
+  margin-left: -30px;
+}
+
+/* ===================== CARD DE COMPRA (ESCONDIDO) ===================== */
+.modal-item {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-card {
+  background: #2a0050;
+  padding: 25px;
+  border-radius: 18px;
+  color: white;
+  text-align: center;
+  width: 350px;
+  position: relative;
+  animation: fadein 0.25s ease;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-img {
+  width: 150px;
+  margin-bottom: 15px;
+}
+
+.close-btn {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.modal-price {
+  background: #3b0067;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 15px 0;
+}
+
+.modal-vbuck {
+  width: 26px;
+}
+
+.buy-btn {
+  background: #6200ea;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.buy-btn:hover {
+  background: #7f1aff;
+}
+/* ===================== FOOTER ===================== */
+footer {
+  margin-top: 14px;
+  border-radius: 0;
+  border: none;
+  background: none;
+}
+
+
+/* ===================== RESPONSIVO ===================== */
+@media (max-width: 730px) {
+  .other-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  #per-page {
+    margin-left: 0 !important;
+  }
+}
+@media (min-width: 1020px) {
+  .container {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+  aside.right {
+    order: 2;
+  }
+}

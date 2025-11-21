@@ -1,0 +1,6 @@
+
+# Arquivos de Configuração Sensíveis
+.env
+
+# Dependências
+/node_modules

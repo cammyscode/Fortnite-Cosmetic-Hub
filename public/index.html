@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/index.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=brightness_alert"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Inicio | Fortnite</title>
+  </head>
+  <body>
+    <div id="container-header">
+      <header>
+        <nav>
+          <img
+            id="logo"
+            src="./images/fortnite-logo-.png"
+            alt="Fortnite Logo"
+          />
+
+          <div class="dropdown">
+            <button class="store-btn" id="btn-store">
+              Loja
+              <span class="arrow"><i class="fa-solid fa-caret-down"></i></span>
+            </button>
+
+            <div class="dropdown-menu" id="menu-popup">
+              <ul class="menu-list">
+                <li id="all-cosmetics">Todos os Itens</li>
+                <li id="pack">Pacotes</li>
+              </ul>
+            </div>
+          </div>
+          <button id="btn-profile">Meu Perfil</button>
+          <button id="btn-public">Usuários</button>
+        </nav>
+        <div id="login">
+          <div
+            id="auth-area"
+            class="auth-area"
+            style="display: flex; align-items: center; gap: 8px"
+          ></div>
+          <button id="open-auth-btn" class="btn">Entrar</button>
+        </div>
+      </header>
+    </div>
+    <div id="fortnite-images">
+      <div class="hero">
+        <div id="hero-children">
+          <p>
+            USUARIOS NOVOS RECEBEM 10.000<span id="vbuck-image"
+              ><img src="../images/v-buck.png" alt="v-buck"
+            /></span>
+          </p>
+          <button id="register-hero">Cadastre-se</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Esta é uma simulação para o desafio de estágio da empresa ESO.
+      Desenvolvido por Camille Almeida Silva.
+    </footer>
+    <script src="./js/header.js"></script>
+    <script>
+      let register = document.querySelector("#register-hero");
+      if (register) {
+        register.addEventListener("click", () => {
+          window.location.href = "/register.html";
+        });
+      }
+    </script>
+  </body>
+</html>
