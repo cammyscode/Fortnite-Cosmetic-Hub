@@ -51,21 +51,21 @@ O objetivo principal foi criar uma plataforma completa que simula o ecossistema 
 <details>
   <summary><strong>Abrir</strong></summary>
 
-│── public/
-│ ├── js/
-│ ├── styles/
-│ ├── images/
-│ ├── index.html
-│ ├── store.html
-│ └── register.html
-│
-│── views/
-│ └── private.ejs
-│
-│── server.js
-│── package.json
-│── .env
-└── README.md
+│── public/<br>
+│ ├── js/<br>
+│ ├── styles/<br>
+│ ├── images/<br>
+│ ├── index.html<br>
+│ ├── store.html<br>
+│ └── register.html<br>
+│<br>
+│── views/<br>
+│ └── private.ejs<br>
+│<br>
+│── server.js<br>
+│── package.json<br>
+│── .env<br>
+└── README.md<br>
 <details>
 
 ---
