@@ -3,7 +3,6 @@ require("dotenv").config();
 const express = require("express");
 const dotenv = require("dotenv");
 const { createClient } = require("@supabase/supabase-js");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const fs = require("fs").promises;
@@ -40,7 +39,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.static("public"));
 
-// ---------- ROTA INICIAL (HTML NORMAL) ----------
+// ---------- ROTA INICIAL ----------
 app.get("/", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
@@ -50,12 +49,13 @@ app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    const { data: signupData, error: signupError } =
-      await supabase.auth.signUp({
+    const { data: signupData, error: signupError } = await supabase.auth.signUp(
+      {
         email,
         password,
         options: { data: { name } },
-      });
+      }
+    );
 
     if (signupError) {
       return res.status(400).json({
@@ -63,8 +63,6 @@ app.post("/signup", async (req, res) => {
         message: signupError.message,
       });
     }
-
-    // Se o Supabase não criar uma sessão direta
     if (!signupData?.user || !signupData?.session) {
       return res.status(200).json({
         ok: true,
@@ -73,7 +71,7 @@ app.post("/signup", async (req, res) => {
       });
     }
 
-    // INSERIR PERFIL NA TABELA
+    // Inserir na tabela do SUPABASE
     const VBUCKS_INICIAL = 10000;
 
     const { error: insertError } = await supabase.from("usuarios").insert([
@@ -125,7 +123,7 @@ app.post("/login", async (req, res) => {
   res.redirect("/private");
 });
 
-// ========== ROTA PRIVADA (AGORA USA EJS!) ==========
+// ========== ROTA PRIVADA ==========
 app.get("/private", async (req, res) => {
   const token = req.cookies.access_token;
 
@@ -146,8 +144,6 @@ app.get("/private", async (req, res) => {
 
     if (userError || !userData)
       return res.status(500).send("Erro ao buscar dados do usuário.");
-
-    // Agora renderiza o PRIVATE.EJS !!!
     res.render("private", {
       name: userData.name,
       vbucks: userData.saldo_vbucks,
