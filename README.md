@@ -79,9 +79,9 @@ cd Fortnite-Cosmetic-Hub
 - npm install
 
 ### 2.Configuração
-Crie um arquivo .env na raiz do projeto:
-SUPABASE_URL=sua_url_aqui
-SUPABASE_KEY=sua_key_aqui
+Crie um arquivo .env na raiz do projeto:<br>
+SUPABASE_URL=sua_url_aqui<br>
+SUPABASE_KEY=sua_key_aqui<br>
 
 ### 3.Rodando o servidor
 node server.js
