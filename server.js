@@ -70,7 +70,6 @@ app.post("/signup", async (req, res) => {
         redirect: "/register.html",
       });
     }
-
     // Inserir na tabela do SUPABASE
     const VBUCKS_INICIAL = 10000;
 
@@ -89,9 +88,8 @@ app.post("/signup", async (req, res) => {
         ok: false,
         message: "Erro ao criar perfil no banco: " + insertError.message,
       });
-    }
+    } // Salvar cookie
 
-    // Salvar cookie
     res.cookie("access_token", signupData.session.access_token, {
       httpOnly: true,
       sameSite: "lax",
@@ -117,10 +115,10 @@ app.post("/login", async (req, res) => {
 
   if (error) {
     return res.status(400).json({ ok: false, message: error.message });
+  } else {
+    res.cookie("access_token", data.session.access_token, { httpOnly: true });
+    res.redirect("/private");
   }
-
-  res.cookie("access_token", data.session.access_token, { httpOnly: true });
-  res.redirect("/private");
 });
 
 // ========== ROTA PRIVADA ==========
@@ -152,6 +150,77 @@ app.get("/private", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Erro interno ao carregar página privada.");
+  }
+});
+
+// ========== COMPRAR ==========
+app.post("/buy", async (req, res) => {
+  try {
+    const token = req.cookies.access_token;
+    if (!token) {
+      return res.status(401).json({ ok: false, message: "Não autenticado" });
+    }
+
+    const { data: userData, error: userError } = await supabase.auth.getUser(
+      token
+    );
+    if (userError || !userData?.user) {
+      return res
+        .status(401)
+        .json({ ok: false, message: "Token inválido ou sessão expirada" });
+    }
+
+    const userId = userData.user.id;
+
+    if (exists) {
+      return res.json({
+        ok: true,
+        message: "Item já adquirido.",
+        alreadyOwned: true,
+      });
+    }
+
+    // Busca saldo do usuário
+    const { data: usuario, error: fetchBalanceError } = await supabase
+      .from("usuarios")
+      .select("saldo_vbucks")
+      .eq("id", userId)
+      .single();
+
+    if (fetchBalanceError || !usuario) {
+      return res
+        .status(500)
+        .json({ ok: false, message: " Erro ao buscar dados do usuário." });
+    }
+
+    const itemPrice = parseInt(price, 10);
+    if (usuario.saldo_vbucks < itemPrice) {
+      return res
+        .status(400)
+        .json({ ok: false, message: " Saldo insuficiente de V-Bucks." });
+    }
+
+    const novoSaldo = usuario.saldo_vbucks - itemPrice;
+
+    const { error: updateError } = await supabase
+      .from("usuarios")
+      .update({ saldo_vbucks: novoSaldo })
+      .eq("id", userId);
+
+    if (updateError) {
+      console.error(" Erro ao atualizar saldo:", updateError);
+      return res
+        .status(500)
+        .json({ ok: false, message: " Erro ao deduzir saldo." });
+    }
+    res.json({
+      ok: true,
+      message: "Compra realizada com sucesso!",
+      novoSaldo: novoSaldo,
+    });
+  } catch (err) {
+    console.error("Erro interno no /buy:", err);
+    res.status(500).json({ ok: false, message: "Erro interno do servidor." });
   }
 });
 

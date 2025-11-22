@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Entrar Cadastrar | Fortnite</title>
     <script src="./js/header.js" defer></script>
-    <script src="./js/users.js" ></script>
+    <script src="./js/users.js"></script>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
@@ -40,14 +40,14 @@
         background-position: center;
         background-repeat: no-repeat;
       }
-
+      /* ===================== CARD DE LOGIN / CADASTRO ===================== */
       .card {
         background: var(--principal-color);
         width: 450px;
         padding: 40px 30px;
         border-radius: 10px;
         box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
-        flex-direction: flex;
+        display: flex;
         align-items: center;
         justify-content: center;
       }
@@ -65,6 +65,7 @@
         flex-direction: column;
       }
       #bar {
+        margin-top: 0;
         border-right: 1px solid grey;
         padding-right: 30px;
       }
@@ -75,18 +76,21 @@
         align-items: center;
       }
 
-      h1 {
+      h3 {
         font-size: 28px;
         margin-bottom: 25px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
       }
-
+      /* ===================== FORM ===================== */
       form {
         width: 100%;
         display: flex;
         flex-direction: column;
         gap: 25px;
       }
-
+     
       .label-float {
         position: relative;
         width: 100%;
@@ -118,6 +122,7 @@
         color: #000;
       }
 
+      /*Botões de cadastrar/ entrar*/
       .entry {
         width: 100%;
         padding: 12px;
@@ -138,7 +143,12 @@
         gap: 10px;
         font-size: 20px;
       }
+      #entry-log{
+        margin-top:80px
+      }
 
+
+      /*Olho para ver senha*/
       .fa-eye,
       .fa-eye-slash {
         position: absolute;
@@ -148,20 +158,30 @@
         cursor: pointer;
         top: 38px;
       }
+
+      /*Caixa de informação de cadastro com sucesso*/
       .ghost-success {
-        background-color: green;
         width: 400px;
         text-align: center;
         justify-content: center;
         padding: 10px;
-        color: rgb(0, 31, 0);
         margin-bottom: 25px;
         display: none;
       }
-      #show-login,
-      #show-register {
+
+      /* ADICIONADO: Elemento para a mensagem de erro de login */
+      #login-message {
+        width: 400px;
+        text-align: center;
+        justify-content: center;
+        padding: 10px;
+        margin-bottom: 25px;
         display: none;
+        background-color: #ffcccc; 
+        color: darkred; 
       }
+      
+      /* ===================== RESPONSIVO ===================== */
       @media (max-width: 900px) {
         .two-panels {
           flex-direction: column;
@@ -175,8 +195,9 @@
       <div class="card two-panels">
         <!-- LOGIN -->
         <div class="panel" id="bar">
-          <h1>Fazer Login</h1>
-          <form action="/login" method="POST" id="entry-account">
+          <h3>Fazer Login</h3>
+          <div id="login-message"></div> 
+          <form id="entry-account"> 
             <div class="label-float">
               <input type="text" id="entry-email" name="email" required />
               <label id="label-login">e-mail</label>
@@ -199,10 +220,10 @@
 
         <!-- CADASTRO -->
         <div class="panel">
-          <h1>Cadastrar</h1>
+          <h3>Cadastrar</h3>
           <div class="ghost-success">Cadastro realizado com sucesso!</div>
 
-          <form action="/signup" id="signup-form">
+          <form id="signup-form">
             <div class="label-float">
               <input type="text" id="name" name="name" required />
               <label id="label-name">nome</label>
@@ -241,9 +262,16 @@
         "#signup-form .label-pass"
       );
       const labelEmailRegister = document.getElementById("label-email");
-      const btnRegister = document.getElementById("entry-reg");
       const ghostSuccess = document.querySelector(".ghost-success");
-      let responseText = "";
+      
+      // Variáveis do Painel de Login
+      const loginForm = document.getElementById('entry-account');
+      const inputEmailLogin = document.getElementById("entry-email");
+      const inputPasswordLogin = document.getElementById("entry-password");
+      const labelEmailLogin = document.getElementById("label-login");
+      const labelPassLogin = document.querySelector("#entry-account .label-pass");
+      const loginMessage = document.getElementById('login-message'); // NOVO: container de mensagem de login
+
 
       //BOTÃO DE VER SENHA
       document.querySelectorAll(".label-float .fa-eye").forEach((eye) => {
@@ -262,7 +290,24 @@
         });
       });
 
-      // Validação e Envio do Formulário de Cadastro
+      // Função de processamento de resposta JSON
+      async function parseResponse(response) {
+            const contentType = response.headers.get("content-type");
+
+            if (contentType && contentType.includes("application/json")) {
+              return await response.json();
+            } else {
+              const text = await response.text();
+              return {
+                ok: false,
+                message:
+                  "Erro inesperado do servidor. Conteúdo: " +
+                  text.substring(0, 50),
+              };
+            }
+          }
+
+      // Validação e Envio do Formulário de Cadastro 
       document
         .getElementById("signup-form")
         .addEventListener("submit", async (e) => {
@@ -288,24 +333,8 @@
           const email = inputEmailRegister.value;
           const password = inputPasswordRegister.value;
 
-          async function parseResponse(response) {
-            const contentType = response.headers.get("content-type");
-
-            if (contentType && contentType.includes("application/json")) {
-              return await response.json();
-            } else {
-              const text = await response.text();
-              return {
-                ok: false,
-                message:
-                  "Erro inesperado do servidor. Conteúdo: " +
-                  text.substring(0, 50),
-              };
-            }
-          }
-
           try {
-            // ENVIAR DADOS PARA O BACKEND (FETCH)
+            // ENVIA DADOS PARA O BACKEND
             let response;
             response = await fetch("/signup", {
               method: "POST",
@@ -313,10 +342,10 @@
               body: JSON.stringify({ name, email, password }),
             });
 
-            // 3. PROCESSAR RESPOSTA JSON
+            // PROCESSA RESPOSTA JSON
             const data = await parseResponse(response);
 
-            if (response.ok) {
+            if (data.ok) { 
               ghostSuccess.textContent =
                 "Cadastro realizado com sucesso! Faça Login para entrar.";
               ghostSuccess.style.backgroundColor = "lightgreen";
@@ -325,16 +354,70 @@
               setTimeout(() => {
                 window.location.href = "/register.html";
               }, 1500);
-              
+            } else if (data.message && data.message.includes("exists")) { 
+              labelEmailRegister.innerHTML =
+                "<strong>*Email já cadastrado </strong>";
+              labelEmailRegister.style.color = "red";
+              inputEmailRegister.style.borderColor = "red";
             } else {
-              const errorMsg =
-                data.message || "Erro fatal do servidor. Tente novamente.";
+               ghostSuccess.textContent = "Erro no cadastro: " + data.message;
+               ghostSuccess.style.backgroundColor = "#ffcccc";
+               ghostSuccess.style.color = "darkred";
+               ghostSuccess.style.display = "block";
             }
           } catch (error) {
             console.error("Erro de Fetch/Conexão:", error);
             ghostSuccess.textContent = "Erro de conexão. Tente novamente.";
           }
         });
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault(); // IMPEDE O SUBMIT TRADICIONAL
+
+        // Resetar estilos de erro
+        labelEmailLogin.style.color = "#555";
+        inputEmailLogin.style.borderColor = "var(--border-first-color)";
+        labelPassLogin.style.color = "#555";
+        inputPasswordLogin.style.borderColor = "var(--border-first-color)";
+        loginMessage.style.display = "none";
+        
+        const email = inputEmailLogin.value;
+        const password = inputPasswordLogin.value;
+        
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await parseResponse(response);
+            
+            if (data.ok === true && data.redirect) {
+                loginMessage.textContent = "Login realizado com sucesso! Redirecionando...";
+                loginMessage.style.backgroundColor = "lightgreen";
+                loginMessage.style.color = "darkgreen";
+                loginMessage.style.display = "block";
+
+                setTimeout(() => {
+                    window.location.href = data.redirect; 
+                }, 1500);
+
+            } else if (data.ok === false) {
+                loginMessage.textContent = "Email ou senha incorretos."; 
+                loginMessage.style.backgroundColor = "#ffcccc";
+                loginMessage.style.color = "darkred";
+                loginMessage.style.display = "block";            
+                inputEmailLogin.style.borderColor = "red";
+                inputPasswordLogin.style.borderColor = "red";
+            }
+        } catch (error) {
+            console.error("Erro de Fetch/Conexão:", error);
+            loginMessage.textContent = "Erro de conexão. Tente novamente.";
+            loginMessage.style.backgroundColor = "#ffcccc";
+            loginMessage.style.color = "darkred";
+            loginMessage.style.display = "block";
+        }
+      });
     </script>
   </body>
 </html>

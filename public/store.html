@@ -37,8 +37,19 @@
             alt="Fortnite Logo"
           />
 
-          <button id="btn-home">Início</button>
-          <button id="btn-store">Loja</button>
+          <div class="dropdown">
+            <button class="store-btn" id="btn-store">
+              Loja
+              <span class="arrow"><i class="fa-solid fa-caret-down"></i></span>
+            </button>
+
+            <div class="dropdown-menu" id="menu-popup">
+              <ul class="menu-list">
+                <li id="all-cosmetics">Todos os Itens</li>
+                <li id="pack">Pacotes</li>
+              </ul>
+            </div>
+          </div>
           <button id="btn-profile">Meu Perfil</button>
           <button id="btn-public">Usuários</button>
         </nav>
@@ -106,9 +117,13 @@
               </div>
             </div>
             <div class="pagination">
-              <button id="prev-page" class="btn ghost small"><i class="fa-solid fa-caret-left"></i></button>
+              <button id="prev-page" class="btn ghost small">
+                <i class="fa-solid fa-caret-left"></i>
+              </button>
               <div id="page-info" class="muted">Página 1</div>
-              <button id="next-page" class="btn ghost small"><i class="fa-solid fa-caret-right"></i></button>
+              <button id="next-page" class="btn ghost small">
+                <i class="fa-solid fa-caret-right"></i>
+              </button>
             </div>
             <div class="cosmetics-gallery" id="gallery"></div>
           </section>

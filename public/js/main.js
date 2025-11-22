@@ -294,10 +294,33 @@ brightness_alert
               modal.remove();
             });
 
-            modal.querySelector(".buy-btn").addEventListener("click", () => {
-              alert("Compra realizada com sucesso!");
-              modal.remove();
-            });
+            modal
+              .querySelector(".buy-btn")
+              .addEventListener("click", async () => {
+                const response = await fetch("/buy", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    itemId: item.id,
+                    price: shopStatus.finalPrice,
+                  }),
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                  alert("ERRO:" + result.error);
+                  return;
+                }
+
+                window.USER_DATA.vbucks = result.novoSaldo;
+                alert("Compra realizada! Novo saldo: " + result.novoSaldo);
+                modal.remove();
+                document.getElementById("vbuck-saldo").textContent =
+                  result.novoSaldo;
+              });
           });
         } else {
           divPrice.addEventListener("click", () => {

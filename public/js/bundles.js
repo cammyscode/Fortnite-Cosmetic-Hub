@@ -4,7 +4,7 @@ async function loadGallery() {
 
   try {
     // -------------------------
-    // 1. BUSCA A LOJA
+    // BUSCA A LOJA
     // -------------------------
     const responseShop = await fetch(shopUrl);
     const shopData = await responseShop.json();
@@ -13,7 +13,7 @@ async function loadGallery() {
     const entries = shopData?.data?.entries ?? [];
 
     // -------------------------
-    // 2. FILTRA SOMENTE BUNDLES
+    //  FILTRA SOMENTE BUNDLES
     // -------------------------
     const bundles = entries.filter(
       (entry) => entry.bundle && entry.bundle.image
@@ -23,7 +23,7 @@ async function loadGallery() {
     console.log("Total bundles:", bundles.length);
 
     // -------------------------
-    // 3. RENDERIZA NA TELA
+    // RENDERIZA NA TELA
     // -------------------------
     bundles.forEach((entry) => {
       const card = document.createElement("div");
