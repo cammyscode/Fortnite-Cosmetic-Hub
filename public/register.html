@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Entrar Cadastrar | Fortnite</title>
     <script src="./js/header.js" defer></script>
-    <script src="./js/users.js"></script>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
@@ -146,7 +145,6 @@
       #entry-log{
         margin-top:80px
       }
-
 
       /*Olho para ver senha*/
       .fa-eye,
@@ -371,9 +369,8 @@
           }
         });
       loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault(); // IMPEDE O SUBMIT TRADICIONAL
+        e.preventDefault(); 
 
-        // Resetar estilos de erro
         labelEmailLogin.style.color = "#555";
         inputEmailLogin.style.borderColor = "var(--border-first-color)";
         labelPassLogin.style.color = "#555";
@@ -382,7 +379,9 @@
         
         const email = inputEmailLogin.value;
         const password = inputPasswordLogin.value;
-        
+
+
+        //Verifica se o email/senha estão corretos
         try {
             const response = await fetch('/login', {
                 method: 'POST',
@@ -391,24 +390,24 @@
             });
 
             const data = await parseResponse(response);
-            
-            if (data.ok === true && data.redirect) {
-                loginMessage.textContent = "Login realizado com sucesso! Redirecionando...";
-                loginMessage.style.backgroundColor = "lightgreen";
-                loginMessage.style.color = "darkgreen";
-                loginMessage.style.display = "block";
-
-                setTimeout(() => {
-                    window.location.href = data.redirect; 
-                }, 1500);
-
-            } else if (data.ok === false) {
+            console.log(data.ok);
+             if (data.status === 400) {
                 loginMessage.textContent = "Email ou senha incorretos."; 
                 loginMessage.style.backgroundColor = "#ffcccc";
                 loginMessage.style.color = "darkred";
                 loginMessage.style.display = "block";            
                 inputEmailLogin.style.borderColor = "red";
                 inputPasswordLogin.style.borderColor = "red";
+            }else {
+                loginMessage.textContent = "Login realizado com sucesso! Redirecionando...";
+                loginMessage.style.backgroundColor = "lightgreen";
+                loginMessage.style.color = "darkgreen";
+                loginMessage.style.display = "block";
+
+                setTimeout(() => {
+                    window.location.href = "/private"; 
+                }, 1500);
+
             }
         } catch (error) {
             console.error("Erro de Fetch/Conexão:", error);

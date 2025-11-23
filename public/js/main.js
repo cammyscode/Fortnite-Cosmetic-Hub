@@ -267,6 +267,7 @@ brightness_alert
           divPrice.appendChild(priceValue);
           divPrice.appendChild(inShopBadge);
 
+          //Cria o card do modal de compra
           divPrice.addEventListener("click", () => {
             const isNew = newItemIds.has(item.id);
             const modal = document.createElement("div");
@@ -297,6 +298,7 @@ brightness_alert
             modal
               .querySelector(".buy-btn")
               .addEventListener("click", async () => {
+                // COMPRA
                 const response = await fetch("/buy", {
                   method: "POST",
                   headers: {
@@ -310,16 +312,47 @@ brightness_alert
 
                 const result = await response.json();
 
-                if (result.error) {
-                  alert("ERRO:" + result.error);
+                if (!result.success) {
+                  alert("ERRO: " + result.message);
+                  console.error(result);
                   return;
                 }
+                // Adiciona ao inventário no localStorage
+                const getUserInventoryKey = () => {
+                  const id =
+                    (window.USER_DATA && window.USER_DATA.name) || "guest";
+                  return `inventory_${id}`;
+                };
 
+                function getInventorySafe() {
+                  const key = getUserInventoryKey();
+                  return JSON.parse(localStorage.getItem(key)) || [];
+                }
+
+                function saveInventorySafe(list) {
+                  const key = getUserInventoryKey();
+                  localStorage.setItem(key, JSON.stringify(list));
+                }
+                const inventory = getInventorySafe();
+                inventory.push({
+                  id: item.id,
+                  name: name.textContent,
+                  rarity: item.rarity.value,
+                  image: img.src,
+                });
+                saveInventorySafe(inventory);
+
+                // Atualiza saldo no front-end
                 window.USER_DATA.vbucks = result.novoSaldo;
-                alert("Compra realizada! Novo saldo: " + result.novoSaldo);
+
+                alert(
+                  "Compra realizada com sucesso!\n Novo saldo: " +
+                    result.novoSaldo+" V-Bucks"
+                );
                 modal.remove();
-                document.getElementById("vbuck-saldo").textContent =
-                  result.novoSaldo;
+                if (typeof renderInventory === "function") {
+                  renderInventory();
+                }
               });
           });
         } else {
@@ -351,7 +384,6 @@ brightness_alert
 
         section.appendChild(name);
         section.appendChild(rarity);
-
         div.appendChild(img);
         div.appendChild(section);
         div.appendChild(divPrice);

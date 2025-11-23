@@ -115,42 +115,37 @@ app.post("/login", async (req, res) => {
 
   if (error) {
     return res.status(400).json({ ok: false, message: error.message });
-  } else {
-    res.cookie("access_token", data.session.access_token, { httpOnly: true });
-    res.redirect("/private");
   }
+
+  res.cookie("access_token", data.session.access_token, { httpOnly: true });
+  res.redirect("/private");
 });
 
 // ========== ROTA PRIVADA ==========
 app.get("/private", async (req, res) => {
-  const token = req.cookies.access_token;
+  const token = req.cookies.token;
 
-  if (!token) return res.redirect("/register.html");
+  if (!token) return res.redirect("/");
 
   const { data, error } = await supabase.auth.getUser(token);
 
-  if (error || !data.user) return res.redirect("/register.html");
+  if (error || !data.user) return res.redirect("/");
 
   const userId = data.user.id;
 
-  try {
-    const { data: userData, error: userError } = await supabase
-      .from("usuarios")
-      .select("name, saldo_vbucks")
-      .eq("id", userId)
-      .single();
+  // Carregar dados do usuário (nome, vbucks etc)
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("uuid, name, vbucks")
+    .eq("uuid", userId)
+    .single();
 
-    if (userError || !userData)
-      return res.status(500).send("Erro ao buscar dados do usuário.");
-    res.render("private", {
-      name: userData.name,
-      vbucks: userData.saldo_vbucks,
-      userData: JSON.stringify(userData),
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Erro interno ao carregar página privada.");
-  }
+  if (userError) return res.status(500).send("Erro ao carregar dados");
+
+  res.render("private", {
+    name: userData.name,
+    vbucks: userData.vbucks,
+  });
 });
 
 // ========== COMPRAR ==========
@@ -172,14 +167,6 @@ app.post("/buy", async (req, res) => {
 
     const userId = userData.user.id;
 
-    if (exists) {
-      return res.json({
-        ok: true,
-        message: "Item já adquirido.",
-        alreadyOwned: true,
-      });
-    }
-
     // Busca saldo do usuário
     const { data: usuario, error: fetchBalanceError } = await supabase
       .from("usuarios")
@@ -193,7 +180,9 @@ app.post("/buy", async (req, res) => {
         .json({ ok: false, message: " Erro ao buscar dados do usuário." });
     }
 
+    const { itemId, price } = req.body;
     const itemPrice = parseInt(price, 10);
+
     if (usuario.saldo_vbucks < itemPrice) {
       return res
         .status(400)
@@ -213,6 +202,7 @@ app.post("/buy", async (req, res) => {
         .status(500)
         .json({ ok: false, message: " Erro ao deduzir saldo." });
     }
+
     res.json({
       ok: true,
       message: "Compra realizada com sucesso!",

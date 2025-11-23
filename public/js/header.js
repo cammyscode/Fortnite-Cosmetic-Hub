@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnBundles = document.querySelector("#pack");
     const dropdownMenu = document.getElementById("menu-popup");
     const storeBtn = document.querySelector(".store-btn");
-    const btnProfile = document.getElementById("btn-profile"); 
 
     // ------------------------------
     // LÓGICA DO DROPDOWN
@@ -50,11 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fazer login / cadastrar 
     if (login) {
         login.addEventListener("click", () => {
-            window.location.href = "/register.html";
-        });
-    }
-    if (btnProfile) {
-        btnProfile.addEventListener("click", () => {
             window.location.href = "/register.html";
         });
     }
