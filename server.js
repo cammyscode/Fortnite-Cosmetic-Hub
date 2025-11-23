@@ -123,28 +123,28 @@ app.post("/login", async (req, res) => {
 
 // ========== ROTA PRIVADA ==========
 app.get("/private", async (req, res) => {
-  const token = req.cookies.token;
+  const token = req.cookies.access_token;
 
-  if (!token) return res.redirect("/");
+  if (!token) return res.redirect("/register.html");
 
   const { data, error } = await supabase.auth.getUser(token);
 
-  if (error || !data.user) return res.redirect("/");
+  if (error || !data?.user) return res.redirect("/register.html");
 
   const userId = data.user.id;
 
-  // Carregar dados do usuário (nome, vbucks etc)
+  // Carregar dados na tabela correta
   const { data: userData, error: userError } = await supabase
-    .from("users")
-    .select("uuid, name, vbucks")
-    .eq("uuid", userId)
+    .from("usuarios")
+    .select("id, name, saldo_vbucks")
+    .eq("id", userId)
     .single();
 
   if (userError) return res.status(500).send("Erro ao carregar dados");
 
   res.render("private", {
     name: userData.name,
-    vbucks: userData.vbucks,
+    vbucks: userData.saldo_vbucks,
   });
 });
 
