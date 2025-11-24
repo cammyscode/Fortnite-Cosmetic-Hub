@@ -1,147 +1,146 @@
 // VARIÁVEIS DE NAVEGAÇÃO / SELEÇÃO
-      const profileContainer = document.querySelector(".user-panel");
-      const storeContainer = document.querySelector(".hidden-store");
-      const bundlesContainer = document.querySelector(".hidden-bundles");
-      const publicContainer = document.querySelector(".hidden-public");
+const profileContainer = document.querySelector(".user-panel");
+const storeContainer = document.querySelector(".hidden-store");
+const bundlesContainer = document.querySelector(".hidden-bundles");
+const publicContainer = document.querySelector(".hidden-public");
 
-      const btnAllCosmetics = document.querySelector("#all-cosmetics");
-      const btnBundles = document.querySelector("#pack");
-      const logoutButton = document.querySelector("#logout");
-      const btnProfile = document.querySelector("#btn-profile");
-      const btnPublic = document.querySelector("#btn-public");
-      const dropdownMenu = document.getElementById("menu-popup");
-      const storeBtn = document.querySelector(".store-btn");
+const btnAllCosmetics = document.querySelector("#all-cosmetics");
+const btnBundles = document.querySelector("#pack");
+const logoutButton = document.querySelector("#logout");
+const btnProfile = document.querySelector("#btn-profile");
+const btnPublic = document.querySelector("#btn-public");
+const dropdownMenu = document.getElementById("menu-popup");
+const storeBtn = document.querySelector(".store-btn");
 
-      const photoInput = document.getElementById("photoInput");
-      const btnSavePhoto = document.getElementById("btn-save-photo");
-      const photoControls = document.querySelector(".photo-controls");
-      const profilePhotoElement = document.getElementById("profilePhoto");
+const photoInput = document.getElementById("photoInput");
+const btnSavePhoto = document.getElementById("btn-save-photo");
+const photoControls = document.querySelector(".photo-controls");
+const profilePhotoElement = document.getElementById("profilePhoto");
 
-      // ================================
-      storeContainer.style.display = "none";
-      bundlesContainer.style.display = "none";
-      publicContainer.style.display = "none";
-      profileContainer.style.display = "flex";
+// ================================
+storeContainer.style.display = "none";
+bundlesContainer.style.display = "none";
+publicContainer.style.display = "none";
+profileContainer.style.display = "flex";
 
-      // Armazena a foto temporariamente antes de salvar
-      let tempPhotoData = null;
+// Armazena a foto temporariamente antes de salvar
+let tempPhotoData = null;
 
-      // CHAVE DO INVENTÁRIO DO USUÁRIO ATUAL
-      window.getUserInventoryKey = () => {
-        const id = (window.USER_DATA && window.USER_DATA.name) || "guest";
-        return `inventory_${id}`;
-      };
+// CHAVE DO INVENTÁRIO DO USUÁRIO ATUAL
+window.getUserInventoryKey = () => {
+  const id = (window.USER_DATA && window.USER_DATA.email) || "guest";
+  return `inventory_${id}`;
+};
 
-      // CHAVE DA FOTO DO USUÁRIO ATUAL
-      window.getUserPhotoKey = (name) => {
-        return `photo_${name || window.USER_DATA.name}`;
-      };
+// CHAVE DA FOTO DO USUÁRIO ATUAL
+window.getUserPhotoKey = (identifier) => {
+  const currentIdentifier =
+    identifier || (window.USER_DATA && window.USER_DATA.email);
+  return `photo_${currentIdentifier || "guest"}`;
+};
 
-      // INVENTÁRIO
-      window.getInventory = () => {
-        const key = window.getUserInventoryKey();
-        return JSON.parse(localStorage.getItem(key)) || [];
-      };
+// LISTA DE USUÁRIOS PÚBLICOS
+window.getAllUsers = () => {
+  return JSON.parse(localStorage.getItem("allUsersList")) || [];
+};
 
-      window.saveInventory = (list) => {
-        const key = window.getUserInventoryKey();
-        localStorage.setItem(key, JSON.stringify(list));
-      };
+window.saveAllUsers = (usersList) => {
+  localStorage.setItem("allUsersList", JSON.stringify(usersList));
+};
 
-      // LISTA DE TODOS OS USUÁRIOS
-      window.getAllUsers = () => {
-        return JSON.parse(localStorage.getItem("allUsers")) || [];
-      };
+window.registerUser = () => {
+  const currentEmail = window.USER_DATA.email;
+  const currentName = window.USER_DATA.name;
+  const allUsers = window.getAllUsers();
+  const userExists = allUsers.some((user) => user.email === currentEmail);
 
-      window.saveAllUsers = (usersList) => {
-        localStorage.setItem("allUsers", JSON.stringify(usersList));
-      };
+  if (!userExists) {
+    allUsers.push({ name: currentName, email: currentEmail });
+    window.saveAllUsers(allUsers);
+  }
+};
+// INVENTÁRIO
+window.getInventory = () => {
+  const key = window.getUserInventoryKey();
+  return JSON.parse(localStorage.getItem(key)) || [];
+};
 
-      // SALVA O USUÁRIO ATUAL NA LISTA DE USUÁRIOS
-      window.registerUser = () => {
-        const currentName = window.USER_DATA.name;
-        const allUsers = window.getAllUsers();
-        const userExists = allUsers.some((user) => user.name === currentName);
+window.saveInventory = (list) => {
+  const key = window.getUserInventoryKey();
+  localStorage.setItem(key, JSON.stringify(list));
+};
 
-        if (!userExists) {
-          allUsers.push({ name: currentName });
-          window.saveAllUsers(allUsers);
-        }
-      };
+// FUNÇÕES DE FOTO DE PERFIL
 
-      // FUNÇÕES DE FOTO DE PERFIL
+// Carrega a foto salva do localStorage
+window.loadProfilePhoto = () => {
+  const userPhotoKey = window.getUserPhotoKey();
+  const savedPhoto = localStorage.getItem(userPhotoKey);
 
-      // Carrega a foto salva do localStorage
-      window.loadProfilePhoto = () => {
-        const userPhotoKey = window.getUserPhotoKey();
-        const savedPhoto = localStorage.getItem(userPhotoKey);
+  if (savedPhoto) {
+    profilePhotoElement.src = savedPhoto;
+  } else {
+    profilePhotoElement.src = "https://i.imgur.com/6VBx3io.png";
+  }
+};
 
-        if (savedPhoto) {
-          profilePhotoElement.src = savedPhoto;
-        } else {
-          profilePhotoElement.src = "https://i.imgur.com/6VBx3io.png";
-        }
-      };
+// Alterna visibilidade dos controles de foto
+document.getElementById("btn-change-photo").addEventListener("click", () => {
+  photoControls.classList.toggle("visible");
+  if (!photoControls.classList.contains("visible")) {
+    tempPhotoData = null;
+    btnSavePhoto.disabled = true;
+    photoInput.value = "";
+    window.loadProfilePhoto();
+  }
+});
 
-      // Alterna visibilidade dos controles de foto
-      document
-        .getElementById("btn-change-photo")
-        .addEventListener("click", () => {
-          photoControls.classList.toggle("visible");
-          if (!photoControls.classList.contains("visible")) {
-            tempPhotoData = null;
-            btnSavePhoto.disabled = true;
-            photoInput.value = "";
-            window.loadProfilePhoto();
-          }
-        });
+// Pré-visualiza a foto selecionada
+photoInput.addEventListener("change", function (event) {
+  const file = event.target.files[0];
+  if (!file) {
+    btnSavePhoto.disabled = true;
+    return;
+  }
 
-      // Pré-visualiza a foto selecionada
-      photoInput.addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        if (!file) {
-          btnSavePhoto.disabled = true;
-          return;
-        }
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    tempPhotoData = e.target.result;
+    profilePhotoElement.src = tempPhotoData;
+    btnSavePhoto.disabled = false;
+  };
+  reader.readAsDataURL(file);
+});
 
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          tempPhotoData = e.target.result;
-          profilePhotoElement.src = tempPhotoData;
-          btnSavePhoto.disabled = false;
-        };
-        reader.readAsDataURL(file);
-      });
+// Salva a foto no localStorage
+btnSavePhoto.addEventListener("click", () => {
+  if (tempPhotoData) {
+    const userPhoto = window.getUserPhotoKey();
+    localStorage.setItem(userPhoto, tempPhotoData);
+    alert("Foto de perfil salva com sucesso!");
 
-      // Salva a foto no localStorage
-      btnSavePhoto.addEventListener("click", () => {
-        if (tempPhotoData) {
-          const userPhotoKey = window.getUserPhotoKey();
-          localStorage.setItem(userPhotoKey, tempPhotoData);
-          alert("Foto de perfil salva com sucesso!");
+    // Esconde os controles e reseta o estado
+    photoControls.classList.remove("visible");
+    tempPhotoData = null;
+    btnSavePhoto.disabled = true;
+    photoInput.value = "";
+  }
+});
 
-          // Esconde os controles e reseta o estado
-          photoControls.classList.remove("visible");
-          tempPhotoData = null;
-          btnSavePhoto.disabled = true;
-          photoInput.value = "";
-        }
-      });
+// FUNÇÕES DE RENDERIZAÇÃO
 
-      // FUNÇÕES DE RENDERIZAÇÃO
+// Renderiza a lista de itens do inventário
+window.renderInventory = () => {
+  const inventoryList = document.querySelector(".item-list");
+  if (!inventoryList) return;
 
-      // Renderiza a lista de itens do inventário
-      window.renderInventory = () => {
-        const inventoryList = document.querySelector(".item-list");
-        if (!inventoryList) return;
+  const inventory = window.getInventory();
+  inventoryList.innerHTML = "";
 
-        const inventory = window.getInventory();
-        inventoryList.innerHTML = "";
+  inventory.forEach((item) => {
+    const li = document.createElement("li");
 
-        inventory.forEach((item) => {
-          const li = document.createElement("li");
-
-          li.innerHTML = `
+    li.innerHTML = `
             <img src="${item.image}" alt="${item.name}">
             <div style="margin-left:10px;">
                 <strong>${item.name
@@ -150,87 +149,86 @@
                 <span style="color:gray;">${item.rarity}</span>
             </div>
             `;
-          inventoryList.appendChild(li);
-        });
-      };
+    inventoryList.appendChild(li);
+  });
+};
 
-      // Renderiza a lista pública de usuários
-      window.renderPublicUsers = () => {
-        const usersListContainer = document.getElementById("users-list");
-        const allUsers = window.getAllUsers();
-        usersListContainer.innerHTML = "";
+// Renderiza a lista pública de usuários
+window.renderPublicUsers = () => {
+  const usersListContainer = document.getElementById("users-list");
+  const allUsers = window.getAllUsers();
+  usersListContainer.innerHTML = "";
 
-        if (allUsers.length === 0) {
-          usersListContainer.innerHTML =
-            "<p style='color: lightgray;'>Nenhum usuário cadastrado ainda.</p>";
-          return;
-        }
+  if (allUsers.length === 0) {
+    usersListContainer.innerHTML =
+      "<p style='color: lightgray;'>Nenhum usuário cadastrado ainda.</p>";
+    return;
+  }
 
-        allUsers.forEach((user) => {
-          const userKey = `inventory_${user.name}`;
-          const inventory = JSON.parse(localStorage.getItem(userKey)) || [];
-          const userPhoto =
-            localStorage.getItem(window.getUserPhotoKey(user.name)) ||
-            "https://i.imgur.com/6VBx3io.png";
+  allUsers.forEach((user) => {
+    const userIdentifier = user.email;
+    const userKey = `inventory_${userIdentifier}`;
+    const inventory = JSON.parse(localStorage.getItem(userKey)) || [];
+    const userPhoto =
+      localStorage.getItem(window.getUserPhotoKey(userIdentifier)) ||
+      "https://i.imgur.com/6VBx3io.png";
 
-          const card = document.createElement("div");
-          card.classList.add("user-card-public");
-          card.setAttribute("data-username", user.name);
+    const card = document.createElement("div");
+    card.classList.add("user-card-public");
+    card.setAttribute("data-username", user.name);
 
-          let inventoryPreviewHtml = "";
-          const previewItems = inventory.slice(0, 4);
-          if (previewItems.length > 0) {
-            previewItems.forEach((item) => {
-              inventoryPreviewHtml += `<img src="${
-                item.image
-              }" class="inventory-item-small" alt="${
-                item.name.split(" ")[0]
-              }">`;
-            });
-          } else {
-            inventoryPreviewHtml =
-              "<p style='font-size: 0.8em; margin: 0;'>Inventário Vazio</p>";
-          }
+    let inventoryPreviewHtml = "";
+    const previewItems = inventory.slice(0, 4);
+    if (previewItems.length > 0) {
+      previewItems.forEach((item) => {
+        inventoryPreviewHtml += `<img src="${
+          item.image
+        }" class="inventory-item-small" alt="${item.name.split(" ")[0]}">`;
+      });
+    } else {
+      inventoryPreviewHtml =
+        "<p style='font-size: 0.8em; margin: 0;'>Inventário Vazio</p>";
+    }
 
-          card.innerHTML = `
+    card.innerHTML = `
             <img src="${userPhoto}" class="user-photo-public" alt="${
-            user.name
-          }">
+      user.name
+    }">
             <h3>${user.name.split(" ")[0]}</h3>
             <div class="user-inventory-preview">${inventoryPreviewHtml}</div>
           `;
 
-          // Listener para abrir o modal
-          card.addEventListener("click", () => {
-            window.openPublicInventoryModal(user.name, inventory, userPhoto);
-          });
+    // Listener para abrir o modal
+    card.addEventListener("click", () => {
+      window.openPublicInventoryModal(user.name, inventory, userPhoto);
+    });
 
-          usersListContainer.appendChild(card);
-        });
-      };
+    usersListContainer.appendChild(card);
+  });
+};
 
-      // Abre modal de inventário público
-      window.openPublicInventoryModal = (username, inventory, userPhoto) => {
-        const modal = document.getElementById("public-inventory-modal");
-        const modalContent = document.createElement("div");
-        modalContent.classList.add("public-modal-content");
-        modal.innerHTML = "";
+// Abre modal de inventário público
+window.openPublicInventoryModal = (username, inventory, userPhoto) => {
+  const modal = document.getElementById("public-inventory-modal");
+  const modalContent = document.createElement("div");
+  modalContent.classList.add("public-modal-content");
+  modal.innerHTML = "";
 
-        let inventoryGridHtml = "";
-        if (inventory.length > 0) {
-          inventory.forEach((item) => {
-            inventoryGridHtml += `
+  let inventoryGridHtml = "";
+  if (inventory.length > 0) {
+    inventory.forEach((item) => {
+      inventoryGridHtml += `
                       <div class="modal-inventory-item">
                           <img src="${item.image}" alt="${item.name}">
                           <span>${item.rarity}</span>
                       </div>
                   `;
-          });
-        } else {
-          inventoryGridHtml = "<p>O inventário deste usuário está vazio.</p>";
-        }
+    });
+  } else {
+    inventoryGridHtml = "<p>O inventário deste usuário está vazio.</p>";
+  }
 
-        modalContent.innerHTML = `
+  modalContent.innerHTML = `
               <div class="modal-header">
                   <h3>Inventário de ${username}</h3>
                   <span class="close-btn">&times;</span>
@@ -241,89 +239,85 @@
               </div>
           `;
 
-        modal.appendChild(modalContent);
-        modal.style.display = "flex";
+  modal.appendChild(modalContent);
+  modal.style.display = "flex";
 
-        // Fechar o modal
-        modalContent
-          .querySelector(".close-btn")
-          .addEventListener("click", () => {
-            modal.style.display = "none";
-          });
+  // Fechar o modal
+  modalContent.querySelector(".close-btn").addEventListener("click", () => {
+    modal.style.display = "none";
+  });
 
-        // Fechar clicando fora
-        modal.addEventListener("click", (e) => {
-          if (e.target === modal) {
-            modal.style.display = "none";
-          }
-        });
-      };
+  // Fechar clicando fora
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+};
 
-      // EVENT LISTENERS DE NAVEGAÇÃO
-      function hideAllViews() {
-        profileContainer.style.display = "none";
-        bundlesContainer.style.display = "none";
-        storeContainer.style.display = "none";
-        publicContainer.style.display = "none";
-        dropdownMenu.classList.remove("show");
-      }
+// EVENT LISTENERS DE NAVEGAÇÃO
+function hideAllViews() {
+  profileContainer.style.display = "none";
+  bundlesContainer.style.display = "none";
+  storeContainer.style.display = "none";
+  publicContainer.style.display = "none";
+  dropdownMenu.classList.remove("show");
+}
 
-      // Abrir/Fechar dropdown
-      storeBtn.addEventListener("click", (event) => {
-        dropdownMenu.classList.toggle("show");
-        event.stopPropagation();
-      });
-      document.addEventListener("click", (event) => {
-        if (
-          !dropdownMenu.contains(event.target) &&
-          dropdownMenu.classList.contains("show")
-        ) {
-          dropdownMenu.classList.remove("show");
-        }
-      });
+// Abrir/Fechar dropdown
+storeBtn.addEventListener("click", (event) => {
+  dropdownMenu.classList.toggle("show");
+  event.stopPropagation();
+});
+document.addEventListener("click", (event) => {
+  if (
+    !dropdownMenu.contains(event.target) &&
+    dropdownMenu.classList.contains("show")
+  ) {
+    dropdownMenu.classList.remove("show");
+  }
+});
 
-      // Ir para o Perfil
-      btnProfile.addEventListener("click", () => {
-        hideAllViews();
-        profileContainer.style.display = "flex";
-        window.renderInventory();
-        window.loadProfilePhoto();
+// Ir para o Perfil
+btnProfile.addEventListener("click", () => {
+  hideAllViews();
+  profileContainer.style.display = "flex";
+  window.renderInventory();
+  window.loadProfilePhoto();
 
-        // Esconde os controles de foto ao voltar para o perfil
-        photoControls.classList.remove("visible");
-        tempPhotoData = null;
-        btnSavePhoto.disabled = true;
-        photoInput.value = "";
-      });
+// Esconde os controles de foto ao voltar para o perfil
+  photoControls.classList.remove("visible");
+  tempPhotoData = null;
+  btnSavePhoto.disabled = true;
+  photoInput.value = "";
+});
 
-      // Ir para a Loja de Cosmetics
-      btnAllCosmetics.addEventListener("click", () => {
-        hideAllViews();
-        storeContainer.style.display = "block";
-      });
+// Ir para a Loja de Cosmetics
+btnAllCosmetics.addEventListener("click", () => {
+  hideAllViews();
+  storeContainer.style.display = "block";
+});
 
-      // Ir para a Loja de Bundles
-      btnBundles.addEventListener("click", () => {
-        hideAllViews();
-        bundlesContainer.style.display = "flex";
-      });
+// Ir para a Loja de Bundles
+btnBundles.addEventListener("click", () => {
+  hideAllViews();
+  bundlesContainer.style.display = "flex";
+});
 
-      // Ir para a Lista de Usuários (NOVO)
-      btnPublic.addEventListener("click", () => {
-        hideAllViews();
-        publicContainer.style.display = "block";
-        window.renderPublicUsers();
-      });
+// Ir para a Lista de Usuários Públicos
+btnPublic.addEventListener("click", () => {
+  hideAllViews();
+  publicContainer.style.display = "block";
+  window.renderPublicUsers();
+});
 
-      // Fazer logout
-      logoutButton.addEventListener("click", () => {
-        window.location.href = "/logout";
-      });
+// Fazer logout
+logoutButton.addEventListener("click", () => {
+  window.location.href = "/logout";
+});
 
-      // Inicialização
-      document.addEventListener("DOMContentLoaded", () => {
-        window.registerUser();
-        window.renderInventory();
-        window.loadProfilePhoto();
-      });
- 
+// Inicialização
+document.addEventListener("DOMContentLoaded", () => {
+  window.renderInventory();
+  window.loadProfilePhoto();
+});

@@ -312,43 +312,30 @@ brightness_alert
 
                 const result = await response.json();
 
-                if (!result.success) {
+                if (!result.ok) {
                   alert("ERRO: " + result.message);
                   console.error(result);
                   return;
                 }
                 // Adiciona ao inventário no localStorage
-                const getUserInventoryKey = () => {
-                  const id =
-                    (window.USER_DATA && window.USER_DATA.name) || "guest";
-                  return `inventory_${id}`;
-                };
-
-                function getInventorySafe() {
-                  const key = getUserInventoryKey();
-                  return JSON.parse(localStorage.getItem(key)) || [];
-                }
-
-                function saveInventorySafe(list) {
-                  const key = getUserInventoryKey();
-                  localStorage.setItem(key, JSON.stringify(list));
-                }
-                const inventory = getInventorySafe();
+                const inventory = window.getInventory();
                 inventory.push({
                   id: item.id,
                   name: name.textContent,
                   rarity: item.rarity.value,
                   image: img.src,
                 });
-                saveInventorySafe(inventory);
+                window.saveInventory(inventory);
 
                 // Atualiza saldo no front-end
                 window.USER_DATA.vbucks = result.novoSaldo;
 
                 alert(
                   "Compra realizada com sucesso!\n Novo saldo: " +
-                    result.novoSaldo+" V-Bucks"
+                    result.novoSaldo +
+                    " V-Bucks"
                 );
+
                 modal.remove();
                 if (typeof renderInventory === "function") {
                   renderInventory();

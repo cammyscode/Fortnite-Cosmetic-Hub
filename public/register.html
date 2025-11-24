@@ -89,7 +89,7 @@
         flex-direction: column;
         gap: 25px;
       }
-     
+
       .label-float {
         position: relative;
         width: 100%;
@@ -142,8 +142,8 @@
         gap: 10px;
         font-size: 20px;
       }
-      #entry-log{
-        margin-top:80px
+      #entry-log {
+        margin-top: 80px;
       }
 
       /*Olho para ver senha*/
@@ -175,10 +175,10 @@
         padding: 10px;
         margin-bottom: 25px;
         display: none;
-        background-color: #ffcccc; 
-        color: darkred; 
+        background-color: #ffcccc;
+        color: darkred;
       }
-      
+
       /* ===================== RESPONSIVO ===================== */
       @media (max-width: 900px) {
         .two-panels {
@@ -194,8 +194,8 @@
         <!-- LOGIN -->
         <div class="panel" id="bar">
           <h3>Fazer Login</h3>
-          <div id="login-message"></div> 
-          <form id="entry-account"> 
+          <div id="login-message"></div>
+          <form action="/login" id="entry-account">
             <div class="label-float">
               <input type="text" id="entry-email" name="email" required />
               <label id="label-login">e-mail</label>
@@ -221,7 +221,7 @@
           <h3>Cadastrar</h3>
           <div class="ghost-success">Cadastro realizado com sucesso!</div>
 
-          <form id="signup-form">
+          <form action="/signup" id="signup-form">
             <div class="label-float">
               <input type="text" id="name" name="name" required />
               <label id="label-name">nome</label>
@@ -261,15 +261,16 @@
       );
       const labelEmailRegister = document.getElementById("label-email");
       const ghostSuccess = document.querySelector(".ghost-success");
-      
+
       // Variáveis do Painel de Login
-      const loginForm = document.getElementById('entry-account');
+      const loginForm = document.getElementById("entry-account");
       const inputEmailLogin = document.getElementById("entry-email");
       const inputPasswordLogin = document.getElementById("entry-password");
       const labelEmailLogin = document.getElementById("label-login");
-      const labelPassLogin = document.querySelector("#entry-account .label-pass");
-      const loginMessage = document.getElementById('login-message'); // NOVO: container de mensagem de login
-
+      const labelPassLogin = document.querySelector(
+        "#entry-account .label-pass"
+      );
+      const loginMessage = document.getElementById("login-message");
 
       //BOTÃO DE VER SENHA
       document.querySelectorAll(".label-float .fa-eye").forEach((eye) => {
@@ -290,22 +291,18 @@
 
       // Função de processamento de resposta JSON
       async function parseResponse(response) {
-            const contentType = response.headers.get("content-type");
+        try {
+          return await response.json();
+        } catch (e) {
+          return {
+            ok: response.ok,
+            message: "Erro inesperado ou HTML retornado. Conteúdo: ",
+            isFallback: true,
+          };
+        }
+      }
 
-            if (contentType && contentType.includes("application/json")) {
-              return await response.json();
-            } else {
-              const text = await response.text();
-              return {
-                ok: false,
-                message:
-                  "Erro inesperado do servidor. Conteúdo: " +
-                  text.substring(0, 50),
-              };
-            }
-          }
-
-      // Validação e Envio do Formulário de Cadastro 
+      // Validação e Envio do Formulário de Cadastro
       document
         .getElementById("signup-form")
         .addEventListener("submit", async (e) => {
@@ -341,9 +338,16 @@
             });
 
             // PROCESSA RESPOSTA JSON
-            const data = await parseResponse(response);
+            if (response.ok === true) {
+              const userData = {
+                name: name,
+                email: email,
+              };
+              localStorage.setItem(
+                "lastRegisteredUser",
+                JSON.stringify(userData)
+              );
 
-            if (data.ok) { 
               ghostSuccess.textContent =
                 "Cadastro realizado com sucesso! Faça Login para entrar.";
               ghostSuccess.style.backgroundColor = "lightgreen";
@@ -352,16 +356,16 @@
               setTimeout(() => {
                 window.location.href = "/register.html";
               }, 1500);
-            } else if (data.message && data.message.includes("exists")) { 
+            } else if (!isFallback.ok) {
               labelEmailRegister.innerHTML =
                 "<strong>*Email já cadastrado </strong>";
               labelEmailRegister.style.color = "red";
               inputEmailRegister.style.borderColor = "red";
             } else {
-               ghostSuccess.textContent = "Erro no cadastro: " + data.message;
-               ghostSuccess.style.backgroundColor = "#ffcccc";
-               ghostSuccess.style.color = "darkred";
-               ghostSuccess.style.display = "block";
+              ghostSuccess.textContent = "Erro no cadastro: " + data.message;
+              ghostSuccess.style.backgroundColor = "#ffcccc";
+              ghostSuccess.style.color = "darkred";
+              ghostSuccess.style.display = "block";
             }
           } catch (error) {
             console.error("Erro de Fetch/Conexão:", error);
@@ -369,52 +373,51 @@
           }
         });
       loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         labelEmailLogin.style.color = "#555";
         inputEmailLogin.style.borderColor = "var(--border-first-color)";
         labelPassLogin.style.color = "#555";
         inputPasswordLogin.style.borderColor = "var(--border-first-color)";
         loginMessage.style.display = "none";
-        
-        const email = inputEmailLogin.value;
-        const password = inputPasswordLogin.value;
 
+        const emailLogin = inputEmailLogin.value;
+        const passwordLogin = inputPasswordLogin.value;
 
         //Verifica se o email/senha estão corretos
         try {
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+          const responseLogin = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: emailLogin,
+              password: passwordLogin,
+            }),
+          });
+          console.log("Resposta do login:", responseLogin);
 
-            const data = await parseResponse(response);
-            console.log(data.ok);
-             if (data.status === 400) {
-                loginMessage.textContent = "Email ou senha incorretos."; 
-                loginMessage.style.backgroundColor = "#ffcccc";
-                loginMessage.style.color = "darkred";
-                loginMessage.style.display = "block";            
-                inputEmailLogin.style.borderColor = "red";
-                inputPasswordLogin.style.borderColor = "red";
-            }else {
-                loginMessage.textContent = "Login realizado com sucesso! Redirecionando...";
-                loginMessage.style.backgroundColor = "lightgreen";
-                loginMessage.style.color = "darkgreen";
-                loginMessage.style.display = "block";
+          const dataLogin = await parseResponse(responseLogin);
 
-                setTimeout(() => {
-                    window.location.href = "/private"; 
-                }, 1500);
-
-            }
-        } catch (error) {
-            console.error("Erro de Fetch/Conexão:", error);
-            loginMessage.textContent = "Erro de conexão. Tente novamente.";
+          if (!dataLogin.ok === true) {
+            loginMessage.textContent = "Email ou senha incorretos.";
             loginMessage.style.backgroundColor = "#ffcccc";
             loginMessage.style.color = "darkred";
             loginMessage.style.display = "block";
+            inputEmailLogin.style.borderColor = "red";
+            inputPasswordLogin.style.borderColor = "red";
+          } else {
+            loginMessage.textContent =
+              "Login realizado com sucesso! Redirecionando...";
+            loginMessage.style.backgroundColor = "lightgreen";
+            loginMessage.style.color = "darkgreen";
+            loginMessage.style.display = "block";
+
+            setTimeout(() => {
+              window.location.href = "/private";
+            }, 1500);
+          }
+        } catch (error) {
+          console.error("Erro de Fetch/Conexão:", error);
         }
       });
     </script>

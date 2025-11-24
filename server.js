@@ -118,25 +118,25 @@ app.post("/login", async (req, res) => {
   }
 
   res.cookie("access_token", data.session.access_token, { httpOnly: true });
-  res.redirect("/private");
+  return res.json({ ok: true, redirect: "/private" });
 });
 
 // ========== ROTA PRIVADA ==========
 app.get("/private", async (req, res) => {
-  const token = req.cookies.access_token;
+  const token = req.cookies.token;
 
   if (!token) return res.redirect("/register.html");
 
   const { data, error } = await supabase.auth.getUser(token);
 
-  if (error || !data?.user) return res.redirect("/register.html");
+  if (error || !data.user) return res.redirect("/register.html");
 
   const userId = data.user.id;
 
-  // Carregar dados na tabela correta
+  // Carregar dados do usuário
   const { data: userData, error: userError } = await supabase
-    .from("usuarios")
-    .select("id, name, saldo_vbucks")
+    .from("users")
+    .select("email, name, vbucks")
     .eq("id", userId)
     .single();
 
@@ -144,7 +144,8 @@ app.get("/private", async (req, res) => {
 
   res.render("private", {
     name: userData.name,
-    vbucks: userData.saldo_vbucks,
+    vbucks: userData.vbucks,
+    email: userData.email,
   });
 });
 
