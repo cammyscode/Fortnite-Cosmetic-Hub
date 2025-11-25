@@ -13,6 +13,8 @@ const dropdownMenu = document.getElementById("menu-popup");
 const storeBtn = document.querySelector(".store-btn");
 const list = document.getElementById("inventory-list");
 const modalInv = document.querySelector(".public-modal-inventory");
+const closeButton = document.querySelector(".close-button");
+const cardsContainer = document.querySelector(".element-inventory");
 
 const photoInput = document.getElementById("photoInput");
 const btnSavePhoto = document.getElementById("btn-save-photo");
@@ -54,6 +56,7 @@ document.addEventListener("DOMContentLoaded", carregarInventario);
 
 // Abrir modal do inventário ao clicar em um item
 list.addEventListener("click", (event) => {
+  if (!event.target.closest("li")) return;
   const divCard = document.createElement("div");
   divCard.classList.add("element-inventory");
   divCard.innerHTML = `
@@ -121,4 +124,3 @@ btnPublic.addEventListener("click", () => {
 logoutButton.addEventListener("click", () => {
   window.location.href = "/logout";
 });
-
