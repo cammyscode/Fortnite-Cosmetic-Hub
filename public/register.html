@@ -271,6 +271,7 @@
         "#entry-account .label-pass"
       );
       const loginMessage = document.getElementById("login-message");
+      const entryLogButton = document.getElementById("entry-log");
 
       //BOTÃO DE VER SENHA
       document.querySelectorAll(".label-float .fa-eye").forEach((eye) => {
@@ -337,17 +338,8 @@
               body: JSON.stringify({ name, email, password }),
             });
 
-            // PROCESSA RESPOSTA JSON
+            // PROCESSA RESPOSTA JSON e salva o user no LocalStorage
             if (response.ok === true) {
-              const userData = {
-                name: name,
-                email: email,
-              };
-              localStorage.setItem(
-                "lastRegisteredUser",
-                JSON.stringify(userData)
-              );
-
               ghostSuccess.textContent =
                 "Cadastro realizado com sucesso! Faça Login para entrar.";
               ghostSuccess.style.backgroundColor = "lightgreen";
@@ -394,9 +386,9 @@
               password: passwordLogin,
             }),
           });
-          console.log("Resposta do login:", responseLogin);
 
           const dataLogin = await parseResponse(responseLogin);
+          console.log("Resposta do login:", dataLogin);
 
           if (!dataLogin.ok === true) {
             loginMessage.textContent = "Email ou senha incorretos.";
@@ -406,16 +398,23 @@
             inputEmailLogin.style.borderColor = "red";
             inputPasswordLogin.style.borderColor = "red";
           } else {
-            loginMessage.textContent =
-              "Login realizado com sucesso! Redirecionando...";
-            loginMessage.style.backgroundColor = "lightgreen";
-            loginMessage.style.color = "darkgreen";
-            loginMessage.style.display = "block";
-
-            setTimeout(() => {
-              window.location.href = "/private";
-            }, 1500);
+            window.USER_DATA = {
+              id: dataLogin.user.id,
+              name: dataLogin.user.name,
+              email: dataLogin.user.email,
+              vbucks: dataLogin.user.vbucks,
+            };
           }
+
+          loginMessage.textContent =
+            "Login realizado com sucesso! Redirecionando...";
+          loginMessage.style.backgroundColor = "lightgreen";
+          loginMessage.style.color = "darkgreen";
+          loginMessage.style.display = "block";
+
+          setTimeout(() => {
+            window.location.href = "/private";
+          }, 1500);
         } catch (error) {
           console.error("Erro de Fetch/Conexão:", error);
         }

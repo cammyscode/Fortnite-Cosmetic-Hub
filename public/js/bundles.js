@@ -135,6 +135,8 @@ async function loadGallery() {
     gallery.innerHTML = `<p style="color:red;">Erro ao carregar bundles.</p>`;
     console.error(error);
   }
+
+  
 }
 
 loadGallery();

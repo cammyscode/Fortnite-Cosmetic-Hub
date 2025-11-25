@@ -288,58 +288,44 @@ brightness_alert
         <button class="buy-btn">Comprar</button>
       </div>
     `;
-
             document.body.appendChild(modal);
 
-            modal.querySelector(".close-btn").addEventListener("click", () => {
-              modal.remove();
+            // Fechar o modal
+            const closeBtn = modal.querySelector(".close-btn");
+            if (closeBtn) {
+              closeBtn.addEventListener("click", () => modal.remove());
+            }
+            //Fechar clicando fora
+            modal.addEventListener("click", (e) => {
+              if (e.target === modal) modal.remove();
             });
-
             modal
               .querySelector(".buy-btn")
               .addEventListener("click", async () => {
-                // COMPRA
                 const response = await fetch("/buy", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    itemId: item.id,
+                    itemName: name.textContent,
+                    rarity: item.rarity.value,
                     price: shopStatus.finalPrice,
+                    image: img.src,
                   }),
                 });
 
                 const result = await response.json();
 
                 if (!result.ok) {
-                  alert("ERRO: " + result.message);
-                  console.error(result);
+                  alert(result.message);
                   return;
                 }
-                // Adiciona ao inventário no localStorage
-                const inventory = window.getInventory();
-                inventory.push({
-                  id: item.id,
-                  name: name.textContent,
-                  rarity: item.rarity.value,
-                  image: img.src,
-                });
-                window.saveInventory(inventory);
 
-                // Atualiza saldo no front-end
-                window.USER_DATA.vbucks = result.novoSaldo;
+                alert("Compra realizada! Novo saldo: " + result.novoSaldo);
 
-                alert(
-                  "Compra realizada com sucesso!\n Novo saldo: " +
-                    result.novoSaldo +
-                    " V-Bucks"
-                );
-
+                carregarInventario();
                 modal.remove();
-                if (typeof renderInventory === "function") {
-                  renderInventory();
-                }
               });
           });
         } else {
