@@ -36,7 +36,6 @@ profileContainer.style.display = "flex";
 // -------------------------------------
 let tempPhotoData = null;
 
-
 btnChangePhoto.addEventListener("click", () => {
   photoInput.click();
 });
@@ -325,6 +324,23 @@ logoutButton.addEventListener("click", () => {
   window.location.href = "/logout";
 });
 
+// Ir para lojas
+if (storeBtn && dropdownMenu) {
+  storeBtn.addEventListener("click", (event) => {
+    console.log("CLIQUE NO BOTÃO LOJA DETECTADO.");
+    dropdownMenu.classList.toggle("show");
+    event.stopPropagation();
+  });
+  document.addEventListener("click", (event) => {
+    if (
+      !dropdownMenu.contains(event.target) &&
+      dropdownMenu.classList.contains("show")
+    ) {
+      dropdownMenu.classList.remove("show");
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // -------------------------------------
   // SELEÇÃO DE VARIÁVEIS ÚNICAS (mobile)
@@ -402,30 +418,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const users = document.getElementById("btn-public-mobile");
 
   // Ir para o Perfil
-  profile.addEventListener("click", () => {
-    window.location.href = "/private";
-    photoControls.classList.remove("visible");
-    tempPhotoData = null;
-    btnSavePhoto.disabled = true;
-    photoInput.value = "";
-  });
+  if (profile) {
+    profile.addEventListener("click", () => {
+      window.location.href = "/private";
+      photoControls.classList.remove("visible");
+      tempPhotoData = null;
+      btnSavePhoto.disabled = true;
+      photoInput.value = "";
+    });
+  }
 
   // Ir para a Loja de Cosmetics
-  allCosmetics.addEventListener("click", () => {
-    hideAllViews();
-    storeContainer.style.display = "block";
-  });
+  if (allCosmetics) {
+    allCosmetics.addEventListener("click", () => {
+      hideAllViews();
+      storeContainer.style.display = "block";
+    });
+  }
 
   // Ir para a Loja de Bundles
-  bundles.addEventListener("click", () => {
-    hideAllViews();
-    bundlesContainer.style.display = "flex";
-  });
+  if (bundles) {
+    bundles.addEventListener("click", () => {
+      hideAllViews();
+      bundlesContainer.style.display = "flex";
+    });
+  }
 
   // Ir para a Lista de Usuários
-  users.addEventListener("click", () => {
-    hideAllViews();
-    publicContainer.style.display = "block";
-    window.renderPublicUsers();
-  });
+  if (users) {
+    users.addEventListener("click", () => {
+      hideAllViews();
+      publicContainer.style.display = "block";
+      window.renderPublicUsers();
+    });
+  }
 });

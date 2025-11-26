@@ -308,6 +308,10 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          const name = document.getElementById("name").value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
           // Resetar estilos de erro
           labelPassRegister.innerHTML = "senha";
           labelPassRegister.style.color = "#555";
@@ -324,10 +328,6 @@
             inputPasswordRegister.style.borderColor = "red";
             return;
           }
-          const name = document.getElementById("name").value;
-          const email = inputEmailRegister.value;
-          const password = inputPasswordRegister.value;
-
           try {
             // ENVIA DADOS PARA O BACKEND
             let response;
@@ -336,9 +336,10 @@
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ name, email, password }),
             });
-
+            const resultSig = await response.json();
+            console.log(resultSig);
             // PROCESSA RESPOSTA JSON
-            if (response.ok === true) {
+            if (resultSig.ok === true) {
               ghostSuccess.textContent =
                 "Cadastro realizado com sucesso! Faça Login para entrar.";
               ghostSuccess.style.backgroundColor = "lightgreen";
@@ -347,16 +348,11 @@
               setTimeout(() => {
                 window.location.href = "/register.html";
               }, 1500);
-            } else if (response.ok === false) {
+            } else {
               labelEmailRegister.innerHTML =
                 "<strong>*Email já cadastrado </strong>";
               labelEmailRegister.style.color = "red";
               inputEmailRegister.style.borderColor = "red";
-            } else {
-              ghostSuccess.textContent = "Erro no cadastro: " + data.message;
-              ghostSuccess.style.backgroundColor = "#ffcccc";
-              ghostSuccess.style.color = "darkred";
-              ghostSuccess.style.display = "block";
             }
           } catch (error) {
             console.error("Erro de Fetch/Conexão:", error);

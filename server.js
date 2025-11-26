@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+  origin: ["http://localhost:4000"],
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -45,7 +45,6 @@ app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    // 1. Criar usuário
     const { data: signupData, error: signupError } = await supabase.auth.signUp(
       {
         email,
@@ -68,7 +67,7 @@ app.post("/signup", async (req, res) => {
       });
     }
 
-    // 2. Inserir perfil no banco (com 10k V-Bucks)
+    // Inserir perfil no banco (com 10k V-Bucks)
     const VBUCKS_INICIAL = 10000;
 
     const { error: insertError } = await supabase.from("usuarios").insert([
@@ -92,7 +91,6 @@ app.post("/signup", async (req, res) => {
     return res.status(200).json({
       ok: true,
       message: "Cadastro concluído! Faça login.",
-      redirect: "/login.html",
     });
   } catch (err) {
     console.error(err);
