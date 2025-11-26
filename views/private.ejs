@@ -65,7 +65,6 @@
             <button id="logout">
               <span><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
             </button>
-
             <div class="photo-container">
               <img
                 id="profilePhoto"
@@ -73,7 +72,7 @@
                 class="user-photo"
               />
               <button id="btn-change-photo">
-                <span> <i class="fa-solid fa-camera"></i> </span>
+                <span><i class="fa-solid fa-camera"></i></span>
               </button>
             </div>
 
@@ -193,11 +192,18 @@
       Desenvolvido por Camille Almeida Silva.
     </footer>
     <script>
+      profilePhotoElement = document.getElementById("profilePhoto");
+
       window.USER_DATA = {
         name: "<%= name %>",
         email: "<%= email %>",
         saldo_vbucks: "<%= saldo_vbucks %>",
+        user_pic: "<%= user_pic %>",
       };
+
+      if (USER_DATA.user_pic && USER_DATA.user_pic !== "null") {
+        profilePhotoElement.src = USER_DATA.user_pic;
+      }
 
       document.addEventListener("DOMContentLoaded", () => {
         const { name, email, saldo_vbucks } = window.USER_DATA;
@@ -207,6 +213,7 @@
         document.querySelector(".vbucks").textContent = saldo_vbucks;
       });
     </script>
+
     <script src="/js/main.js"></script>
     <script src="/js/bundles.js"></script>
     <script src="/js/navigation.js"></script>

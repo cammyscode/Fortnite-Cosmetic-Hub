@@ -74,7 +74,7 @@ async function loadGallery() {
 
       const inShopBadge = document.createElement("button");
       inShopBadge.classList.add("in-shop");
-      inShopBadge.innerHTML = '<i class="fa-solid fa-cart-shopping"></i>';
+      inShopBadge.innerHTML = " ";
 
       vbuckImg.id = "vbuck";
       vbuckImg.src = "./images/v-buck.png";
@@ -95,8 +95,10 @@ async function loadGallery() {
       const itemsContainer = document.createElement("div");
       itemsContainer.classList.add("bundle-items");
 
-      if (entry.brItems && entry.brItems.length >= 0) {
-        entry.brItems.forEach((item) => {
+      const bundleItems = entry.brItems || entry.cars;
+
+      if (bundleItems && bundleItems.length >= 0) {
+        bundleItems.forEach((item) => {
           const itemDiv = document.createElement("div");
           itemDiv.classList.add("bundle-item");
 
@@ -128,6 +130,62 @@ async function loadGallery() {
         });
       }
 
+      // BOTÃO DE COMPRAR PACOTE COMPLETO
+      const btnComprarBundle = document.createElement("button");
+      const spanBuy = document.createElement("span");
+      spanBuy.classList.add("icon-buy");
+      spanBuy.innerHTML = '<i class="fa-solid fa-cart-shopping"></i>';
+      btnComprarBundle.textContent = "Comprar pacote completo ";
+
+      btnComprarBundle.classList.add("btn-comprar-bundle");
+
+      btnComprarBundle.addEventListener("click", async () => {
+        const bundleItems = entry.brItems || entry.cars || [];
+
+        if (bundleItems.length === 0) {
+          alert("Nenhum item encontrado no bundle.");
+          return;
+        }
+
+        let novoSaldoFinal = null;
+
+        for (const item of bundleItems) {
+          const itemName = item.name
+            .replace(/[_-]/g, " ")
+            .replace(/([a-z])([A-Z])/g, "$1 $2")
+            .trim();
+          const rarity = item.rarity.value || "Desconhecida";
+          const price = entry.finalPrice / bundleItems.length;
+          const image =
+            item.images?.icon ||
+            item.images?.smallIcon ||
+            item.images?.small ||
+            item.images?.large ||
+            "";
+
+          const response = await fetch("/buy", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ itemName, rarity, price, image }),
+          });
+
+          const data = await response.json();
+
+          if (!data.ok) {
+            alert(`Erro ao comprar ${itemName}: ${data.message}`);
+            return;
+          }
+
+          novoSaldoFinal = data.novoSaldo;
+        }
+
+        alert(`Compra concluída! Novo saldo: ${novoSaldoFinal} V-Bucks`);
+        location.reload();
+      });
+
+      // adiciona o botão ao container
+      itemsContainer.appendChild(btnComprarBundle);
+      btnComprarBundle.appendChild(spanBuy);
       containerBundle.appendChild(itemsContainer);
       gallery.appendChild(containerBundle);
     });
@@ -135,8 +193,6 @@ async function loadGallery() {
     gallery.innerHTML = `<p style="color:red;">Erro ao carregar bundles.</p>`;
     console.error(error);
   }
-
-  
 }
 
 loadGallery();

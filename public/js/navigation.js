@@ -13,13 +13,12 @@ const dropdownMenu = document.getElementById("menu-popup");
 const storeBtn = document.querySelector(".store-btn");
 const list = document.getElementById("inventory-list");
 const modalInv = document.querySelector(".public-modal-inventory");
-const closeButton = document.querySelector(".close-button");
-const cardsContainer = document.querySelector(".element-inventory");
 
+const profilePhotoElement = document.getElementById("profilePhoto");
+const btnChangePhoto = document.getElementById("btn-change-photo");
 const photoInput = document.getElementById("photoInput");
 const btnSavePhoto = document.getElementById("btn-save-photo");
 const photoControls = document.querySelector(".photo-controls");
-const profilePhotoElement = document.getElementById("profilePhoto");
 
 // ================================
 storeContainer.style.display = "none";
@@ -27,8 +26,56 @@ bundlesContainer.style.display = "none";
 publicContainer.style.display = "none";
 profileContainer.style.display = "flex";
 
-// Armazena a foto temporariamente antes de salvar
+//Função para salvar a foto de perfil
 let tempPhotoData = null;
+
+btnChangePhoto.addEventListener("click", () => {
+  photoInput.click();
+});
+
+photoInput.addEventListener("change", () => {
+  const file = photoInput.files[0];
+  if (!file) return;
+
+  tempPhotoData = file;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    profilePhotoElement.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  photoControls.classList.add("visible");
+  btnSavePhoto.disabled = false;
+});
+
+// Enviar a imagem ao backend
+btnSavePhoto.addEventListener("click", async () => {
+  if (!tempPhotoData) return;
+
+  const formData = new FormData();
+  formData.append("photo", tempPhotoData);
+
+  const response = await fetch("/update-photo", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json();
+  console.log(data);
+
+  if (data.ok) {
+    profilePhotoElement.src = data.url;
+    alert("Foto atualizada!");
+  } else {
+    alert("Erro ao salvar foto.");
+  }
+
+  tempPhotoData = null;
+  btnSavePhoto.disabled = true;
+  photoControls.classList.remove("visible");
+  photoInput.value = "";
+});
 
 // Função para carregar o inventário do usuário
 async function carregarInventario() {
@@ -52,22 +99,45 @@ async function carregarInventario() {
     list.appendChild(li);
   });
 }
-document.addEventListener("DOMContentLoaded", carregarInventario);
+if (window.location.pathname === "/private") {
+  document.addEventListener("DOMContentLoaded", carregarInventario);
+}
 
 // Abrir modal do inventário ao clicar em um item
 list.addEventListener("click", (event) => {
-  if (!event.target.closest("li")) return;
+  const item = event.target.closest("li");
+  if (!item) return;
+
   const divCard = document.createElement("div");
   divCard.classList.add("element-inventory");
   divCard.innerHTML = `
     <div class="modal-inventory-card">
-      <span class="close-button">x</span>  
-      ${event.target.innerHTML}
+      <button class="close-button">x</button>  
+      ${item.innerHTML}
       <button class="buy-btn">Devolver Item</button>
     </div>
   `;
+
   document.body.appendChild(divCard);
+
+  const cardsContainer = divCard;
+  const cardInv = divCard.querySelector(".modal-inventory-card");
+  const closeButton = divCard.querySelector(".close-button");
+
+  // Fechar clicando no X
+  closeButton.addEventListener("click", () => {
+    cardsContainer.remove();
+  });
+
+  // Fechar clicando fora
+  cardsContainer.addEventListener("click", (e) => {
+    if (e.target === cardsContainer) {
+      cardsContainer.remove();
+    }
+  });
 });
+
+// Fechar o modal
 
 // EVENT LISTENERS DE NAVEGAÇÃO
 function hideAllViews() {

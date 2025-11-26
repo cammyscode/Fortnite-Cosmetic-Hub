@@ -41,6 +41,13 @@ body {
 }
 
 /* ===================== CARDS ===================== */
+.container-bundle{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 80px;
+}
 .card-bundle {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
@@ -139,12 +146,13 @@ body {
   display: flex;
   flex-wrap: wrap;
   margin: 30px;
-  gap: 20px;
+  gap: 40px;
   justify-content: flex-start;
   align-items: start;
   width: 1200px;
   height: auto;
   padding: 10px 0;
+  width: 100%;
 }
 
 .bundle-item {
@@ -204,3 +212,21 @@ body {
   padding-left: 10px;
   text-transform: uppercase;
 }
+
+/* Botão comprar bundle */
+.btn-comprar-bundle {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 8px;
+  border: none;
+}
+.btn-comprar-bundle:hover {
+  background-color: #7da17d;
+}
+

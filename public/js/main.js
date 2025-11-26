@@ -27,7 +27,7 @@ async function loadGallery() {
       newItemIds = new Set(allNewItems.map((n) => n.id));
     }
 
-    if (responseCosmetics.status !== 200) {
+    if (!responseCosmetics.ok) {
       gallery.innerHTML = `<p style="color:white;"><span style="color:yellow;" class="material-symbols-outlined">
 brightness_alert
 </span> API temporariamente indisponível (${itens.status})</p>`;
@@ -118,6 +118,20 @@ brightness_alert
     // ------------------------------
     // PAGINAÇÃO
     // ------------------------------
+    const invResponse = await fetch("/inventory");
+    const invData = await invResponse.json();
+
+    function normalizeName(name) {
+      return name
+        .replace(/[_-]/g, " ")
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .trim();
+    }
+
+    const ownedItems = new Set(
+      invData.items.map((i) => normalizeName(i.item_name))
+    );
+
     let currentPage = 1;
     let perPage = parseInt(document.getElementById("per-page").value);
 
@@ -129,10 +143,6 @@ brightness_alert
       const selectedRarity = filterRarity.value;
 
       // Aplica filtros
-      console.log(
-        "Exemplo de nomes:",
-        validItems.slice(0, 5).map((i) => i.name)
-      );
       const filteredItems = validItems.filter((item) => {
         const shopStatus = shopItemsMap.get(item.id);
 
@@ -143,7 +153,7 @@ brightness_alert
             item.name &&
             item.name
               .replace(/[_-]/g, " ")
-              .toLowerCase()
+              .replace(/([a-z])([A-Z])/g, "$1 $2")
               .includes(searchName.value.toLowerCase())
           )
         )
@@ -217,10 +227,7 @@ brightness_alert
         img.height = 100;
 
         const name = document.createElement("p");
-        name.textContent = item.name
-          .replace(/[_-]/g, " ")
-          .replace(/([a-z])([A-Z])/g, "$1 $2")
-          .trim();
+        name.textContent = normalizeName(item.name);
         name.style.fontSize = "17px";
         name.style.fontWeight = "bold";
         name.style.textAlign = "left";
@@ -247,26 +254,42 @@ brightness_alert
         modal.classList.add("modal");
 
         if (shopStatus && shopStatus.currentlyInShop) {
-          // Ícone V-BUCK
-          const vbuckImg = document.createElement("img");
-          vbuckImg.id = "vbuck";
-          vbuckImg.src = "./images/v-buck.png";
-          vbuckImg.alt = "v-buck";
+          if (ownedItems.has(normalizeName(item.name))) {
+            const acquired = document.createElement("p");
+            acquired.textContent = "Já adquirido";
+            acquired.style.color = "lightgreen";
+            acquired.style.fontWeight = "bold";
+            acquired.style.fontSize = "18px";
+            divPrice.appendChild(acquired);
 
-          // Preço
-          const priceValue = document.createElement("span");
-          priceValue.classList.add("price-value");
-          priceValue.textContent = shopStatus.finalPrice;
+            section.appendChild(name);
+            section.appendChild(rarity);
+            div.appendChild(img);
+            div.appendChild(section);
+            div.appendChild(divPrice);
+            gallery.appendChild(div);
+            return;
+          } else {
+            // Ícone V-BUCK
+            const vbuckImg = document.createElement("img");
+            vbuckImg.id = "vbuck";
+            vbuckImg.src = "./images/v-buck.png";
+            vbuckImg.alt = "v-buck";
 
-          // Botão do carrinho
-          const inShopBadge = document.createElement("span");
-          inShopBadge.classList.add("in-shop-cosmetics");
-          inShopBadge.innerHTML = '<i class="fa-solid fa-cart-shopping"></i>';
+            // Preço
+            const priceValue = document.createElement("span");
+            priceValue.classList.add("price-value");
+            priceValue.textContent = shopStatus.finalPrice;
 
-          divPrice.appendChild(vbuckImg);
-          divPrice.appendChild(priceValue);
-          divPrice.appendChild(inShopBadge);
+            // Botão do carrinho
+            const inShopBadge = document.createElement("span");
+            inShopBadge.classList.add("in-shop-cosmetics");
+            inShopBadge.innerHTML = '<i class="fa-solid fa-cart-shopping"></i>';
 
+            divPrice.appendChild(vbuckImg);
+            divPrice.appendChild(priceValue);
+            divPrice.appendChild(inShopBadge);
+          }
           //Cria o card do modal de compra
           divPrice.addEventListener("click", () => {
             const isNew = newItemIds.has(item.id);
@@ -323,6 +346,9 @@ brightness_alert
                 }
 
                 alert("Compra realizada! Novo saldo: " + result.novoSaldo);
+
+                let purchaseId = result.purchaseId;
+                console.log("ID da compra:", purchaseId);
 
                 carregarInventario();
                 modal.remove();

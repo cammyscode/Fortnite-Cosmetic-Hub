@@ -286,6 +286,7 @@ body {
   animation: fadeInScale 0.25s ease-out;
 }
 .modal-inventory-card img {
+  margin-top: 50px;
   width: 150px;
   height: 150px;
   object-fit: contain;
@@ -305,9 +306,10 @@ body {
 }
 
 .close-button {
-  position: absolute;
   top: 0;
-  margin-top: 200px;
+  margin-top: -65px;
+  background: none;
+  border: none;
   margin-left: 280px;
   font-weight: bold;
   font-size: 20px;
@@ -317,7 +319,7 @@ body {
   transition: 0.2s;
 }
 .close-button:hover {
-  color: var(--back-color);
+  color: var(--highlight-color);
 }
 
 /* Botão de devolver */

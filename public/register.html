@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Entrar Cadastrar | Fortnite</title>
-    <script src="./js/header.js" defer></script>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
@@ -338,7 +337,7 @@
               body: JSON.stringify({ name, email, password }),
             });
 
-            // PROCESSA RESPOSTA JSON e salva o user no LocalStorage
+            // PROCESSA RESPOSTA JSON
             if (response.ok === true) {
               ghostSuccess.textContent =
                 "Cadastro realizado com sucesso! Faça Login para entrar.";
@@ -398,23 +397,16 @@
             inputEmailLogin.style.borderColor = "red";
             inputPasswordLogin.style.borderColor = "red";
           } else {
-            window.USER_DATA = {
-              id: dataLogin.user.id,
-              name: dataLogin.user.name,
-              email: dataLogin.user.email,
-              vbucks: dataLogin.user.vbucks,
-            };
+            loginMessage.textContent =
+              "Login realizado com sucesso! Redirecionando...";
+            loginMessage.style.backgroundColor = "lightgreen";
+            loginMessage.style.color = "darkgreen";
+            loginMessage.style.display = "block";
+
+            setTimeout(() => {
+              window.location.href = "/private";
+            }, 1500);
           }
-
-          loginMessage.textContent =
-            "Login realizado com sucesso! Redirecionando...";
-          loginMessage.style.backgroundColor = "lightgreen";
-          loginMessage.style.color = "darkgreen";
-          loginMessage.style.display = "block";
-
-          setTimeout(() => {
-            window.location.href = "/private";
-          }, 1500);
         } catch (error) {
           console.error("Erro de Fetch/Conexão:", error);
         }
