@@ -409,6 +409,66 @@ app.post("/update-photo", upload.single("photo"), async (req, res) => {
 
   res.json({ ok: true, url: urlData.publicUrl });
 });
+// ========== USUÁRIOS PÚBLICOS ==========
+app.get("/public-users", async (req, res) => {
+  try {
+    // Buscar todos os usuários
+    const { data: usersData, error: usersError } = await supabase
+      .from("usuarios")
+      .select("id, name, user_pic");
+
+    if (usersError) {
+      console.error("Erro ao buscar usuários:", usersError);
+      return res
+        .status(500)
+        .json({ ok: false, message: "Erro ao buscar usuários." });
+    }
+
+    // Buscar todos os itens do inventário
+    const { data: purchasesData, error: purchasesError } = await supabase
+      .from("purchases")
+      .select("user_id, item_name, image_url, rarity");
+
+    if (purchasesError) {
+      console.error("Erro ao buscar inventários:", purchasesError);
+      return res
+        .status(500)
+        .json({ ok: false, message: "Erro ao buscar inventários." });
+    }
+
+    const usersWithInventory = usersData.map((user) => {
+      const inventory = purchasesData.filter(
+        (item) => item.user_id === user.id
+      );
+
+      // Cria a pré-visualização (máx. 6 itens)
+      const previewItems = inventory.slice(0, 6).map((item) => ({
+        image: item.image_url,
+        name: item.item_name,
+        rarity: item.rarity,
+      }));
+
+      const fullInventory = inventory.map((item) => ({
+        name: item.item_name,
+        image: item.image_url,
+        rarity: item.rarity,
+      }));
+
+      return {
+        id: user.id,
+        name: user.name,
+        user_pic: user.user_pic || "https://i.imgur.com/6VBx3io.png",
+        preview: previewItems,
+        inventory: fullInventory,
+      };
+    });
+
+    res.json({ ok: true, users: usersWithInventory });
+  } catch (error) {
+    console.error("Erro interno na rota /public-users:", error);
+    res.status(500).json({ ok: false, message: "Erro interno do servidor." });
+  }
+});
 
 // ========== LOGOUT ==========
 app.get("/logout", (req, res) => {

@@ -20,6 +20,7 @@ const photoInput = document.getElementById("photoInput");
 const btnSavePhoto = document.getElementById("btn-save-photo");
 const photoControls = document.querySelector(".photo-controls");
 
+const usersListContainer = document.getElementById("users-list");
 // ================================
 storeContainer.style.display = "none";
 bundlesContainer.style.display = "none";
@@ -167,7 +168,109 @@ list.addEventListener("click", (event) => {
   });
 });
 
-// Fechar o modal
+// Função principal de renderização de usuários
+async function renderPublicUsers() {
+  usersListContainer.innerHTML = `<p style="color: lightgray">Carregando dados dos usuários...</p>`;
+
+  try {
+    const response = await fetch("/public-users");
+    const data = await response.json();
+
+    if (!data.ok) {
+      usersListContainer.innerHTML = `<p style="color:red;">Erro ao carregar usuários: ${data.message}</p>`;
+      return;
+    }
+
+    usersListContainer.innerHTML = ""; // Limpa a mensagem de carregamento
+
+    data.users.forEach((user) => {
+      const card = document.createElement("div");
+      card.classList.add("user-card-public");
+      card.dataset.userId = user.id;
+
+      // Prévia dos 6 primeiros itens
+      const previewHtml = user.preview
+        .map(
+          (item) =>
+            `<img src="${item.image}" alt="${item.name}" class="inventory-item-small" title="${item.name} (${item.rarity})">`
+        )
+        .join("");
+
+      // Se não houver itens, mostra uma mensagem
+      const inventoryPreview =
+        user.preview.length > 0
+          ? previewHtml
+          : `<p>Sem itens no inventário.</p>`;
+
+      card.innerHTML = `
+                <img src="${user.user_pic}" alt="${user.name}" class="user-photo-public">
+                <h3>${user.name}</h3>
+                <div class="user-inventory-preview">
+                    ${inventoryPreview}
+                </div>
+                <p style="margin-top: 10px; font-size: 0.8rem; color: var(--highlight-color);">Ver inventário</p>
+            `;
+
+      card.addEventListener("click", () => openPublicInventoryModal(user));
+      usersListContainer.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Erro no fetch de usuários públicos:", error);
+    usersListContainer.innerHTML = `<p style="color:red;">Erro ao conectar com o servidor.</p>`;
+  }
+}
+
+// Função para abrir o modal de inventário completo
+function openPublicInventoryModal(user) {
+  const inventoryGridHtml = user.inventory
+    .map(
+      (item) => `
+        <div class="modal-inventory-item">
+            <img src="${item.image}" alt="${item.name}">
+            <span style="font-weight: bold;">${item.name}</span>
+            <span>${item.rarity}</span>
+        </div>
+    `
+    )
+    .join("");
+
+  // Conteúdo do modal
+  modalInv.innerHTML = `
+        <div class="public-modal-content">
+            <div class="modal-header">
+                <h3>Inventário de ${user.name}</h3>
+            </div>
+            <div class="modal-inventory-grid">
+                ${
+                  user.inventory.length > 0
+                    ? inventoryGridHtml
+                    : '<p style="color: lightgray;">Este usuário ainda não possui itens.</p>'
+                }
+            </div>
+            <button class="close-btn" id="close-public-modal">x</button>
+        </div>
+    `;
+
+  // Exibir o modal
+  modalInv.style.display = "flex";
+
+  // Adicionar listener para fechar o modal
+  const closeButton = document.getElementById("close-public-modal");
+  closeButton.addEventListener(
+    "click",
+    () => (modalInv.style.display = "none")
+  );
+
+  // Fechar clicando fora
+  modalInv.addEventListener("click", (e) => {
+    if (e.target.id === "public-inventory-modal") {
+      modalInv.style.display = "none";
+    }
+  });
+}
+
+// Expõe a função para ser chamada pelo navigation.js
+window.renderPublicUsers = renderPublicUsers;
 
 // EVENT LISTENERS DE NAVEGAÇÃO
 function hideAllViews() {
