@@ -9,12 +9,12 @@ O objetivo principal foi criar uma plataforma completa que simula o ecossistema 
 ### Frontend
 - HTML5 + CSS3  
 - JavaScript (ES6)  
-- EJS Templates (para páginas privadas)  
+- EJS Templates (para páginas privadas de usuários)  
 - Vercel (deploy)
 
 ### Backend
 - Node.js + Express  
-- Supabase (Auth + Database)  
+- Supabase (Auth + Database + Storage)  
 - API externa: Fortnite API  
 - Cookies + sessão  
 - Vercel (deploy)
@@ -37,12 +37,13 @@ O objetivo principal foi criar uma plataforma completa que simula o ecossistema 
   - Pesquisa por nome  
   - Pesquisa por data  
 - Paginação  
-- Modal de compra com dados reais da API  
+- Modal de compra com dados reais da API
+- Registrar compra do usuário 
+- Inventário do usuário   
+- Exibir os itens comprados na conta 
 
 ### Em Desenvolvimento
-- Registrar compra do usuário
-- Inventário do usuário  
-- Exibir os itens comprados na conta  
+ 
 - Exibir página de comunidade na qual os usuários podem ver os itens de outros usuários
 
 ---
@@ -52,9 +53,10 @@ O objetivo principal foi criar uma plataforma completa que simula o ecossistema 
   <summary><strong>Abrir</strong></summary>
 
 │── public/<br>
+│ ├── fonts/<br>
+│ ├── images/<br>
 │ ├── js/<br>
 │ ├── styles/<br>
-│ ├── images/<br>
 │ ├── index.html<br>
 │ ├── store.html<br>
 │ └── register.html<br>
@@ -87,4 +89,4 @@ SUPABASE_KEY=sua_key_aqui<br>
 node server.js
 
 ### 4.Acessando o projeto
-Após rodar, abra no navegador: http://localhost:3000
+Após rodar, abra no navegador: http://localhost:4000
