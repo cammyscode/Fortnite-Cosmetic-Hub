@@ -348,7 +348,7 @@
               setTimeout(() => {
                 window.location.href = "/register.html";
               }, 1500);
-            } else {
+            } else if (!resultSig.ok) {
               labelEmailRegister.innerHTML =
                 "<strong>*Email já cadastrado </strong>";
               labelEmailRegister.style.color = "red";
@@ -385,7 +385,7 @@
           const dataLogin = await parseResponse(responseLogin);
           console.log("Resposta do login:", dataLogin);
 
-          if (!dataLogin.ok === true) {
+          if (!dataLogin.ok) {
             loginMessage.textContent = "Email ou senha incorretos.";
             loginMessage.style.backgroundColor = "#ffcccc";
             loginMessage.style.color = "darkred";

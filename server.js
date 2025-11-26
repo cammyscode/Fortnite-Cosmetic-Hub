@@ -77,7 +77,6 @@ app.post("/signup", async (req, res) => {
         email: email,
         ativo: true,
         saldo_vbucks: VBUCKS_INICIAL,
-        id_users: signupData.user.id,
       },
     ]);
 
@@ -91,6 +90,7 @@ app.post("/signup", async (req, res) => {
     return res.status(200).json({
       ok: true,
       message: "Cadastro concluído! Faça login.",
+      redirect: "/private",
     });
   } catch (err) {
     console.error(err);
@@ -174,7 +174,7 @@ app.get("/private", async (req, res) => {
   // Carregar dados do usuário
   const { data: userData, error: userError } = await supabase
     .from("usuarios")
-    .select("name, id_users, saldo_vbucks, email, user_pic")
+    .select("name, id, saldo_vbucks, email, user_pic")
     .eq("id", userId)
     .single();
 
@@ -183,7 +183,6 @@ app.get("/private", async (req, res) => {
   res.render("private", {
     name: userData.name,
     saldo_vbucks: userData.saldo_vbucks,
-    id_users: userData.id_users,
     email: data.user.email,
     user_pic: userData.user_pic,
   });
