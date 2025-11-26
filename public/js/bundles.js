@@ -57,7 +57,7 @@ async function loadGallery() {
       const priceC = document.createElement("div");
       priceC.classList.add("price-container-bundle");
 
-      const title = document.createElement("h1");
+      const title = document.createElement("h3");
       title.textContent = entry.bundle.name;
 
       priceC.appendChild(title);

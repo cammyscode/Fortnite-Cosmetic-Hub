@@ -327,7 +327,6 @@ logoutButton.addEventListener("click", () => {
 // Ir para lojas
 if (storeBtn && dropdownMenu) {
   storeBtn.addEventListener("click", (event) => {
-    console.log("CLIQUE NO BOTÃO LOJA DETECTADO.");
     dropdownMenu.classList.toggle("show");
     event.stopPropagation();
   });

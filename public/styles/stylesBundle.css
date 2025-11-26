@@ -21,7 +21,6 @@ body {
   min-height: 100vh;
 }
 
-
 /* ===================== GALERIA DE BUNDLES ===================== */
 #container-gallery {
   display: flex;
@@ -41,7 +40,7 @@ body {
 }
 
 /* ===================== CARDS ===================== */
-.container-bundle{
+.container-bundle {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -99,7 +98,7 @@ body {
   border-radius: 16px;
 }
 /*Nome do bundle*/
-.card-bundle h1 {
+.card-bundle h3 {
   font-size: 3rem;
   text-shadow: 5px 6px black;
   margin: 15px 0 5px;
@@ -127,7 +126,7 @@ body {
 }
 
 /*Valor do desconto*/
-.disc{
+.disc {
   display: flex;
   position: absolute;
   margin-top: -500px;
@@ -138,7 +137,7 @@ body {
   height: 40px;
   font-size: 20px !important;
   font-style: italic;
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   align-items: center;
 }
 /* ===================== ITENS BUNDLES ===================== */
@@ -230,3 +229,229 @@ body {
   background-color: #7da17d;
 }
 
+/* ===================== MEDIA QUERIES ===================== */
+
+/* --- TELAS GRANDES (≥ 1200px) --- */
+@media (min-width: 1200px) {
+  .gallery {
+    max-width: 1500px;
+  }
+}
+
+/* --- NOTEBOOKS / TABLETS GRANDES (992px a 1199px) --- */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .gallery {
+    width: 95%;
+    padding: 30px;
+    justify-content: center;
+  }
+
+  .card-bundle {
+    height: 600px;
+  }
+
+  .price-container-bundle {
+    margin-top: 450px;
+  }
+
+  .bundle-items {
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .bundle-item {
+    width: 200px;
+    height: 250px;
+  }
+}
+
+/* --- TABLETS (768px a 991px) --- */
+@media (min-width: 768px) and (max-width: 991px) {
+  #container-gallery h1 {
+    font-size: 2.5rem;
+  }
+  .gallery {
+    width: 98%;
+    padding: 20px;
+  }
+  .card-bundle {
+    height: 500px;
+    width: 90%;
+  }
+
+  .price-container-bundle {
+    margin-top: 350px;
+  }
+  .price-container-bundle p {
+    font-size: 30px;
+  }
+
+  .disc {
+    margin-top: -400px;
+    font-size: 18px !important;
+    padding: 8px;
+  }
+
+  .bundle-items {
+    justify-content: space-around;
+    gap: 20px;
+  }
+
+  .bundle-item {
+    width: 180px;
+    height: 230px;
+  }
+  .bundle-item p {
+    font-size: 1rem;
+  }
+
+  /* Botão Comprar */
+  .btn-comprar-bundle {
+    font-size: 30px;
+  }
+}
+
+/* --- CELULARES (481px a 767px) --- */
+@media (min-width: 481px) and (max-width: 767px) {
+  .gallery {
+    flex-direction: column;
+    width: 100%;
+    padding: 15px;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .card-bundle {
+    height: 380px;
+    width: 95%;
+  }
+  .card-bundle img {
+    width: 100%;
+  }
+
+  .price-container-bundle {
+    position: absolute;
+  display: flex;
+    width: 100%;
+    font-size: 15px;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .price-container-bundle p {
+    font-size: 20px;
+  }
+  .regular {
+    margin-left: 10px;
+  }
+  .icon-vbuck img {
+    width: 35px;
+    height: 40px;
+  }
+
+  .in-shop {
+    display: none;
+  }
+
+  .disc {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    margin: 0;
+    font-size: 16px !important;
+    padding: 5px;
+  }
+
+  .card-bundle h3 {
+    font-size: 2rem;
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .bundle-items {
+    margin: 10px 0;
+    gap: 15px;
+    justify-content: space-around;
+    padding: 0 10px;
+  }
+
+  .bundle-item {
+    width: 150px;
+    height: 200px;
+  }
+  .bundle-item p {
+    font-size: 0.9rem;
+  }
+
+  .btn-comprar-bundle {
+    font-size: 24px;
+    padding: 15px;
+  }
+}
+
+/* --- CELULARES PEQUENOS (Até 480px) --- */
+@media (max-width: 480px) {
+  .gallery {
+    flex-direction: column;
+    padding: 10px;
+    gap: 30px;
+  }
+
+  .card-bundle {
+    height: auto;
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  .price-container-bundle {
+    position: relative;
+    margin: 5px 0 0 0;
+    padding: 5px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .price-container-bundle p {
+    font-size: 24px;
+  }
+  .icon-vbuck img {
+    width: 30px;
+    height: 35px;
+  }
+
+  .card-bundle h3 {
+    font-size: 1.5rem;
+    margin: 5px 0;
+  }
+
+  .disc {
+    top: 10px;
+    left: 10px;
+    font-size: 14px !important;
+    padding: 4px;
+    height: 30px;
+  }
+
+  /* ITENS DENTRO DO BUNDLE */
+  .bundle-items {
+    margin: 10px 0;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .bundle-item {
+    width: 130px;
+    height: 180px;
+    border-radius: 10px;
+  }
+  .bundle-item p {
+    font-size: 0.8rem;
+  }
+
+  .btn-comprar-bundle {
+    font-size: 20px;
+    padding: 10px;
+  }
+}
