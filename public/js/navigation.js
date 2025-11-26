@@ -82,6 +82,8 @@ async function carregarInventario() {
   const response = await fetch("/inventory");
   const data = await response.json();
 
+  console.log(data);
+
   if (!data.ok) {
     console.error("Erro ao carregar inventário");
     return;
@@ -91,11 +93,16 @@ async function carregarInventario() {
 
   data.items.forEach((item) => {
     const li = document.createElement("li");
+    li.dataset.purchaseId = item.id;
+    li.dataset.price = item.price_vbucks;
+
     li.innerHTML = `
-      <img src="${item.image_url}" width="60">
-      <strong>${item.item_name}</strong>  
-      <span> (${item.rarity})</span>
-    `;
+  <img src="${item.image_url}" width="60">
+  <strong>${item.item_name}</strong>  
+  <span> (${item.rarity})</span>
+  <span style="display:none;" class="price">${item.price_vbucks}</span>
+`;
+
     list.appendChild(li);
   });
 }
@@ -114,14 +121,37 @@ list.addEventListener("click", (event) => {
     <div class="modal-inventory-card">
       <button class="close-button">x</button>  
       ${item.innerHTML}
-      <button class="buy-btn">Devolver Item</button>
+      <button class="buy-btn" id="btn-return">Devolver Item</button>
     </div>
   `;
 
   document.body.appendChild(divCard);
 
+  const returnButton = divCard.querySelector("#btn-return");
+  returnButton.addEventListener("click", async () => {
+    const purchaseId = item.dataset.purchaseId;
+    const priceItem = item.dataset.price;
+
+    const responseReturn = await fetch("/return", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ purchaseId, priceItem }),
+    });
+
+    const result = await responseReturn.json();
+
+    if (result.ok) {
+      alert("Item devolvido!");
+      divCard.remove();
+      carregarInventario();
+    } else {
+      alert("Erro ao devolver item");
+    }
+  });
+
   const cardsContainer = divCard;
-  const cardInv = divCard.querySelector(".modal-inventory-card");
   const closeButton = divCard.querySelector(".close-button");
 
   // Fechar clicando no X

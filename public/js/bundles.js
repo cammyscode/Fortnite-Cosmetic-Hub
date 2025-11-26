@@ -9,27 +9,45 @@ async function loadGallery() {
     const responseShop = await fetch(shopUrl);
     const shopData = await responseShop.json();
 
-    // Debug
     const entries = shopData?.data?.entries ?? [];
 
     // -------------------------
-    //  FILTRA SOMENTE BUNDLES
+    // FILTRA SOMENTE BUNDLES
     // -------------------------
     const bundles = entries.filter(
       (entry) => entry.bundle && entry.bundle.image
     );
 
     console.log("Bundles encontrados:", bundles);
-    console.log("Total bundles:", bundles.length);
+
+    // -------------------------
+    // FUNÇÃO PARA PEGAR ITENS
+    // -------------------------
+    function extractBundleItems(entry) {
+      if (Array.isArray(entry.items) && entry.items.length > 0) {
+        return entry.items;
+      }
+
+      if (Array.isArray(entry.items) && entry.items[0]?.items) {
+        return entry.items.flatMap((x) => x.items);
+      }
+
+      if (entry.brItems?.length > 0) return entry.brItems;
+      if (entry.cars?.length > 0) return entry.cars;
+      if (entry.granted?.length > 0) return entry.granted;
+
+      return [];
+    }
 
     // -------------------------
     // RENDERIZA NA TELA
     // -------------------------
     bundles.forEach((entry) => {
-      const card = document.createElement("div");
-      card.classList.add("card-bundle");
       const containerBundle = document.createElement("div");
       containerBundle.classList.add("container-bundle");
+
+      const card = document.createElement("div");
+      card.classList.add("card-bundle");
 
       const img = document.createElement("img");
       img.src = entry.bundle.image;
@@ -42,120 +60,108 @@ async function loadGallery() {
       const title = document.createElement("h1");
       title.textContent = entry.bundle.name;
 
-      const price = document.createElement("p");
-      price.classList.add("final");
-      price.textContent = `${entry.finalPrice}`;
-
       priceC.appendChild(title);
-      priceC.appendChild(price);
 
       if (entry.finalPrice < entry.regularPrice) {
         const priceRegular = document.createElement("p");
         priceRegular.classList.add("regular");
         priceRegular.textContent = `${entry.regularPrice}`;
 
-        const disccount = document.createElement("p");
-        disccount.classList.add("disc");
-        disccount.textContent = entry.banner?.value ?? "";
+        const discount = document.createElement("p");
+        discount.classList.add("disc");
+        discount.textContent = entry.banner?.value ?? "";
 
         priceC.appendChild(priceRegular);
-        priceC.appendChild(disccount);
-      } else if (entry.finalPrice == entry.regularPrice) {
+        priceC.appendChild(discount);
+      } else {
         const priceRegular = document.createElement("p");
         priceRegular.classList.add("regular");
         priceRegular.textContent = "-";
         priceC.appendChild(priceRegular);
       }
+      const price = document.createElement("p");
+      price.classList.add("final");
+      price.textContent = `${entry.finalPrice}`;
+      priceC.appendChild(price);
 
-      // Ícone V-BUCK
       const spanVbuck = document.createElement("span");
       spanVbuck.classList.add("icon-vbuck");
+
       const vbuckImg = document.createElement("img");
-
-      const inShopBadge = document.createElement("button");
-      inShopBadge.classList.add("in-shop");
-      inShopBadge.innerHTML = " ";
-
       vbuckImg.id = "vbuck";
       vbuckImg.src = "./images/v-buck.png";
       vbuckImg.alt = "v-buck";
 
-      // Monta o card
-      containerBundle.appendChild(card);
+      spanVbuck.appendChild(vbuckImg);
+      price.appendChild(spanVbuck);
+
       card.appendChild(img);
       card.appendChild(priceC);
-      priceC.appendChild(price);
-      price.appendChild(spanVbuck);
-      price.appendChild(inShopBadge);
-      spanVbuck.appendChild(vbuckImg);
+      containerBundle.appendChild(card);
 
       // ------------------------------------------------------
-      //  ITENS DO BUNDLE
+      // ITENS DO BUNDLE
       // ------------------------------------------------------
       const itemsContainer = document.createElement("div");
       itemsContainer.classList.add("bundle-items");
 
-      const bundleItems = entry.brItems || entry.cars;
+      const bundleItems = extractBundleItems(entry);
 
-      if (bundleItems && bundleItems.length >= 0) {
-        bundleItems.forEach((item) => {
-          const itemDiv = document.createElement("div");
-          itemDiv.classList.add("bundle-item");
+      bundleItems.forEach((item) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.classList.add("bundle-item");
 
-          const itemName = document.createElement("p");
+        const itemName = document.createElement("p");
+        itemName.style.fontSize = "17px";
+        itemName.style.fontWeight = "bold";
+        itemName.style.textAlign = "left";
+        itemName.textContent = item.name;
 
-          itemName.textContent = item.name
-            .replace(/[_-]/g, " ")
-            .replace(/([a-z])([A-Z])/g, "$1 $2")
-            .trim();
-          itemName.style.fontSize = "17px";
-          itemName.style.fontWeight = "bold";
-          itemName.style.textAlign = "left";
+        const itemImg = document.createElement("img");
+        itemImg.src =
+          item.images?.icon ||
+          item.images?.smallIcon ||
+          item.images?.small ||
+          item.images?.large ||
+          "";
+        itemImg.alt = item.name;
 
-          const itemId = document.createElement("p");
+        itemDiv.appendChild(itemImg);
+        itemDiv.appendChild(itemName);
 
-          const itemImg = document.createElement("img");
-          itemImg.src =
-            item.images?.icon ||
-            item.images?.smallIcon ||
-            item.images?.small ||
-            item.images?.large;
-          itemImg.alt = item.name;
+        itemsContainer.appendChild(itemDiv);
+      });
 
-          itemDiv.appendChild(itemImg);
-          itemDiv.appendChild(itemName);
-          itemDiv.appendChild(itemId);
+      // ------------------------------------------------------
+      // BOTÃO DE COMPRAR PACOTE
+      // ------------------------------------------------------
 
-          itemsContainer.appendChild(itemDiv);
-        });
-      }
-
-      // BOTÃO DE COMPRAR PACOTE COMPLETO
       const btnComprarBundle = document.createElement("button");
+      btnComprarBundle.classList.add("btn-comprar-bundle");
+      btnComprarBundle.textContent = "Comprar pacote completo";
+
       const spanBuy = document.createElement("span");
       spanBuy.classList.add("icon-buy");
       spanBuy.innerHTML = '<i class="fa-solid fa-cart-shopping"></i>';
-      btnComprarBundle.textContent = "Comprar pacote completo ";
 
-      btnComprarBundle.classList.add("btn-comprar-bundle");
+      btnComprarBundle.appendChild(spanBuy);
 
       btnComprarBundle.addEventListener("click", async () => {
-        const bundleItems = entry.brItems || entry.cars || [];
+        const bundleItems = extractBundleItems(entry);
 
         if (bundleItems.length === 0) {
-          alert("Nenhum item encontrado no bundle.");
+          alert("Nenhum item encontrado neste bundle.");
           return;
         }
 
         let novoSaldoFinal = null;
 
         for (const item of bundleItems) {
-          const itemName = item.name
-            .replace(/[_-]/g, " ")
-            .replace(/([a-z])([A-Z])/g, "$1 $2")
-            .trim();
-          const rarity = item.rarity.value || "Desconhecida";
-          const price = entry.finalPrice / bundleItems.length;
+          const itemName = item.name;
+          const rarity = item.rarity?.value || item.rarity || "Desconhecida";
+          const rawPrice = entry.finalPrice / bundleItems.length;
+          const price = Math.round(rawPrice);
+
           const image =
             item.images?.icon ||
             item.images?.smallIcon ||
@@ -172,7 +178,7 @@ async function loadGallery() {
           const data = await response.json();
 
           if (!data.ok) {
-            alert(`Erro ao comprar ${itemName}: ${data.message}`);
+            alert("Erro ao comprar: " + data.message);
             return;
           }
 
@@ -183,9 +189,8 @@ async function loadGallery() {
         location.reload();
       });
 
-      // adiciona o botão ao container
       itemsContainer.appendChild(btnComprarBundle);
-      btnComprarBundle.appendChild(spanBuy);
+
       containerBundle.appendChild(itemsContainer);
       gallery.appendChild(containerBundle);
     });

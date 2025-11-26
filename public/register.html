@@ -347,7 +347,7 @@
               setTimeout(() => {
                 window.location.href = "/register.html";
               }, 1500);
-            } else if (!isFallback.ok) {
+            } else if (response.ok === false) {
               labelEmailRegister.innerHTML =
                 "<strong>*Email já cadastrado </strong>";
               labelEmailRegister.style.color = "red";
