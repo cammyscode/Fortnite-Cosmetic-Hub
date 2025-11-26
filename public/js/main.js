@@ -350,7 +350,7 @@ brightness_alert
                 let purchaseId = result.purchaseId;
                 console.log("ID da compra:", purchaseId);
 
-                carregarInventario();
+                loadInventory();
                 modal.remove();
               });
           });

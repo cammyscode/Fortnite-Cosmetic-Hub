@@ -474,6 +474,7 @@ footer {
   }
   #per-page {
     margin-left: 0 !important;
+    gap:5px;
   }
 }
 @media (min-width: 1020px) {

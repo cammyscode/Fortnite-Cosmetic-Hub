@@ -29,27 +29,56 @@
     <div id="container-header">
       <header>
         <nav>
+          <button id="mobile-menu-toggle" class="mobile-toggle-btn">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
           <img
             id="logo"
             src="./images/fortnite-logo-.png"
             alt="Fortnite Logo"
           />
 
-          <div class="dropdown">
-            <button class="store-btn" id="btn-store">
-              Loja
-              <span class="arrow"><i class="fa-solid fa-caret-down"></i></span>
-            </button>
-
-            <div class="dropdown-menu" id="menu-popup">
-              <ul class="menu-list">
-                <li id="all-cosmetics">Todos os Itens</li>
-                <li id="pack">Pacotes</li>
-              </ul>
+          <div id="side-menu" class="side-menu">
+            <div class="side-menu-content">
+              <button id="close-side-menu" class="close-btn">&times;</button>
+              <div class="side-nav-links">
+                <div class="dropdown-mobile">
+                  <button class="store-btn-mobile">
+                    Loja <i class="fa-solid fa-caret-down"></i>
+                  </button>
+                  <ul class="dropdown-menu-mobile">
+                    <li id="all-cosmetics-mobile">Todos os Itens</li>
+                    <li id="pack-mobile">Pacotes</li>
+                  </ul>
+                </div>
+                <button id="btn-profile-mobile">Meu Perfil</button>
+                <button id="btn-public-mobile">Usuários</button>
+                <button id="open-auth-btn-mobile" class="btn">Entrar</button>
+              </div>
             </div>
           </div>
-          <button id="btn-public">Comunidade</button>
+
+          <div class="desktop-nav-links">
+            <div class="dropdown">
+              <button class="store-btn" id="btn-store">
+                Loja
+                <span class="arrow"
+                  ><i class="fa-solid fa-caret-down"></i
+                ></span>
+              </button>
+              <div class="dropdown-menu" id="menu-popup">
+                <ul class="menu-list">
+                  <li id="all-cosmetics">Todos os Itens</li>
+                  <li id="pack">Pacotes</li>
+                </ul>
+              </div>
+            </div>
+
+            <button id="btn-profile">Meu Perfil</button>
+          </div>
         </nav>
+
         <div id="login">
           <div
             id="auth-area"
@@ -77,6 +106,7 @@
       Esta é uma simulação para o desafio de estágio da empresa ESO.
       Desenvolvido por Camille Almeida Silva.
     </footer>
+    
     <script src="./js/header.js"></script>
     <script>
       let register = document.querySelector("#register-hero");

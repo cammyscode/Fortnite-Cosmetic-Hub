@@ -1,4 +1,7 @@
+// -------------------------------------
 // VARIÁVEIS DE NAVEGAÇÃO / SELEÇÃO
+// -------------------------------------
+
 const profileContainer = document.querySelector(".user-panel");
 const storeContainer = document.querySelector(".hidden-store");
 const bundlesContainer = document.querySelector(".hidden-bundles");
@@ -21,19 +24,24 @@ const btnSavePhoto = document.getElementById("btn-save-photo");
 const photoControls = document.querySelector(".photo-controls");
 
 const usersListContainer = document.getElementById("users-list");
+
 // ================================
 storeContainer.style.display = "none";
 bundlesContainer.style.display = "none";
 publicContainer.style.display = "none";
 profileContainer.style.display = "flex";
 
-//Função para salvar a foto de perfil
+// -------------------------------------
+// FUNÇÃO PARA FOTO DE PERFIL
+// -------------------------------------
 let tempPhotoData = null;
+
 
 btnChangePhoto.addEventListener("click", () => {
   photoInput.click();
 });
 
+// Atualizar foto
 photoInput.addEventListener("change", () => {
   const file = photoInput.files[0];
   if (!file) return;
@@ -78,8 +86,10 @@ btnSavePhoto.addEventListener("click", async () => {
   photoInput.value = "";
 });
 
-// Função para carregar o inventário do usuário
-async function carregarInventario() {
+// -------------------------------------
+// FUNÇÃO PARA CARREGAR O INVENTÁRIO DO USUÁRIO
+// -------------------------------------
+async function loadInventory() {
   const response = await fetch("/inventory");
   const data = await response.json();
 
@@ -108,7 +118,7 @@ async function carregarInventario() {
   });
 }
 if (window.location.pathname === "/private") {
-  document.addEventListener("DOMContentLoaded", carregarInventario);
+  document.addEventListener("DOMContentLoaded", loadInventory);
 }
 
 // Abrir modal do inventário ao clicar em um item
@@ -146,7 +156,7 @@ list.addEventListener("click", (event) => {
     if (result.ok) {
       alert("Item devolvido!");
       divCard.remove();
-      carregarInventario();
+      loadInventory();
     } else {
       alert("Erro ao devolver item");
     }
@@ -155,12 +165,12 @@ list.addEventListener("click", (event) => {
   const cardsContainer = divCard;
   const closeButton = divCard.querySelector(".close-button");
 
-  // Fechar clicando no X
+  // Fechar o card clicando no X
   closeButton.addEventListener("click", () => {
     cardsContainer.remove();
   });
 
-  // Fechar clicando fora
+  // Fechar o card clicando fora
   cardsContainer.addEventListener("click", (e) => {
     if (e.target === cardsContainer) {
       cardsContainer.remove();
@@ -168,7 +178,9 @@ list.addEventListener("click", (event) => {
   });
 });
 
-// Função principal de renderização de usuários
+// -------------------------------------
+// FUNÇÃO PARA RENDERIZAÇÃO DE USUÁRIOS
+// -------------------------------------
 async function renderPublicUsers() {
   usersListContainer.innerHTML = `<p style="color: lightgray">Carregando dados dos usuários...</p>`;
 
@@ -181,7 +193,7 @@ async function renderPublicUsers() {
       return;
     }
 
-    usersListContainer.innerHTML = ""; 
+    usersListContainer.innerHTML = "";
 
     data.users.forEach((user) => {
       const card = document.createElement("div");
@@ -218,7 +230,7 @@ async function renderPublicUsers() {
   }
 }
 
-// Abrir o modal de inventário completo
+// Abrir o modal de inventário dos outro usuários completo
 function openPublicInventoryModal(user) {
   const inventoryGridHtml = user.inventory
     .map(
@@ -269,7 +281,9 @@ function openPublicInventoryModal(user) {
 
 window.renderPublicUsers = renderPublicUsers;
 
+// -------------------------------------
 // EVENT LISTENERS DE NAVEGAÇÃO
+// -------------------------------------
 function hideAllViews() {
   profileContainer.style.display = "none";
   bundlesContainer.style.display = "none";
@@ -277,20 +291,6 @@ function hideAllViews() {
   publicContainer.style.display = "none";
   dropdownMenu.classList.remove("show");
 }
-
-// Abrir/Fechar dropdown
-storeBtn.addEventListener("click", (event) => {
-  dropdownMenu.classList.toggle("show");
-  event.stopPropagation();
-});
-document.addEventListener("click", (event) => {
-  if (
-    !dropdownMenu.contains(event.target) &&
-    dropdownMenu.classList.contains("show")
-  ) {
-    dropdownMenu.classList.remove("show");
-  }
-});
 
 // Ir para o Perfil
 btnProfile.addEventListener("click", () => {
@@ -323,4 +323,109 @@ btnPublic.addEventListener("click", () => {
 // Fazer logout
 logoutButton.addEventListener("click", () => {
   window.location.href = "/logout";
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  // -------------------------------------
+  // SELEÇÃO DE VARIÁVEIS ÚNICAS (mobile)
+  // -------------------------------------
+
+  const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+  const sideMenu = document.getElementById("side-menu");
+  const closeSideMenu = document.getElementById("close-side-menu");
+  const storeBtnMobile = document.querySelector(".store-btn-mobile");
+  const dropdownMenuMobile = document.querySelector(".dropdown-menu-mobile");
+
+  // -------------------------------------
+  // FUNÇÕES PARA MOBILE
+  // -------------------------------------
+  const closeMobileMenu = () => {
+    if (sideMenu && sideMenu.classList.contains("open")) {
+      sideMenu.classList.remove("open");
+    }
+  };
+
+  // -------------------------------------
+  // LÓGICA DO MENU LATERAL (Mobile)
+  // -------------------------------------
+  // Abrir menu ao clicar no bars
+  if (mobileMenuToggle && sideMenu) {
+    mobileMenuToggle.addEventListener("click", (event) => {
+      sideMenu.classList.add("open");
+      event.stopPropagation();
+    });
+
+    // Fechar menu (Clique no X)
+    if (closeSideMenu) {
+      closeSideMenu.addEventListener("click", closeMobileMenu);
+    }
+
+    // Fechar menu (Clique FORA do menu)
+    document.addEventListener("click", (event) => {
+      // Verifica se o clique não foi dentro do menu lateral E o menu está aberto
+      if (
+        !sideMenu.contains(event.target) &&
+        sideMenu.classList.contains("open")
+      ) {
+        if (
+          event.target !== mobileMenuToggle &&
+          !mobileMenuToggle.contains(event.target)
+        ) {
+          closeMobileMenu();
+        }
+      }
+    });
+
+    // Fechar menu (Tecla ESC)
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && sideMenu.classList.contains("open")) {
+        closeMobileMenu();
+      }
+    });
+  }
+
+  // Dropdown mobile (dentro do side menu)
+  if (storeBtnMobile && dropdownMenuMobile) {
+    storeBtnMobile.addEventListener("click", (event) => {
+      dropdownMenuMobile.classList.toggle("show");
+      event.stopPropagation();
+    });
+  }
+
+  // -------------------------------------
+  // EVENTOS DE NAVEGAÇÃO (Mobile)
+  // -------------------------------------
+
+  const allCosmetics = document.getElementById("all-cosmetics-mobile");
+  const bundles = document.getElementById("pack-mobile");
+  const profile = document.getElementById("btn-profile-mobile");
+  const users = document.getElementById("btn-public-mobile");
+
+  // Ir para o Perfil
+  profile.addEventListener("click", () => {
+    window.location.href = "/private";
+    photoControls.classList.remove("visible");
+    tempPhotoData = null;
+    btnSavePhoto.disabled = true;
+    photoInput.value = "";
+  });
+
+  // Ir para a Loja de Cosmetics
+  allCosmetics.addEventListener("click", () => {
+    hideAllViews();
+    storeContainer.style.display = "block";
+  });
+
+  // Ir para a Loja de Bundles
+  bundles.addEventListener("click", () => {
+    hideAllViews();
+    bundlesContainer.style.display = "flex";
+  });
+
+  // Ir para a Lista de Usuários
+  users.addEventListener("click", () => {
+    hideAllViews();
+    publicContainer.style.display = "block";
+    window.renderPublicUsers();
+  });
 });

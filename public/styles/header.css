@@ -129,3 +129,209 @@ nav button:hover {
 .dropdown-menu.show {
   display: block !important;
 }
+/* ===================== MENU MOBILE ===================== */
+
+.side-menu-content button,
+.dropdown-mobile button,
+.dropdown-menu-mobile li {
+  display: block;
+  width: 100%;
+  color: #fff;
+}
+.side-menu .side-nav-links button,
+.side-menu .dropdown-mobile button,
+.side-menu .dropdown-menu-mobile li {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Ocultar botão mobile*/
+.mobile-toggle-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--principal-color);
+  font-size: 24px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* Menu Lateral */
+.side-menu {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 200;
+  top: 0;
+  left: 0;
+  background-color: var(--menu-bg);
+  overflow-x: hidden;
+  padding-top: 60px;
+  transition: 0.3s;
+  box-shadow: 4px 0 10px var(--shadow-color);
+}
+
+.side-menu.open {
+  width: 280px;
+}
+
+.side-menu-content button,
+.dropdown-mobile button {
+  padding: 15px 25px;
+  text-decoration: none;
+  font-size: 20px;
+  color: var(--principal-color);
+  display: block;
+  transition: 0.3s;
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-family: "Oswald", sans-serif;
+}
+.side-menu-content button:hover,
+.dropdown-mobile button:hover {
+  background-color: var(--highlight-color);
+}
+
+.side-nav-links button#open-auth-btn-mobile {
+  margin: 20px 25px;
+  width: auto;
+  text-align: center;
+}
+
+/* Botão de fechar */
+.close-btn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Dropdown Mobile */
+.dropdown-mobile {
+  width: 100%;
+}
+.dropdown-menu-mobile {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.dropdown-menu-mobile.show {
+  display: block;
+}
+.dropdown-menu-mobile li {
+  padding: 10px 40px;
+  color: var(--principal-color);
+  cursor: pointer;
+  font-size: 18px;
+}
+.dropdown-menu-mobile li:hover {
+  background-color: var(--og-purple);
+}
+
+/* ===================== MEDIA QUERY ===================== */
+@media (max-width: 730px) {
+  nav .dropdown,
+  nav button:not(.mobile-toggle-btn),
+  .desktop-nav-links {
+    display: none !important;
+  }
+  .mobile-toggle-btn {
+    display: block;
+  }
+
+  nav {
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .side-menu {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 200;
+    top: 0;
+    left: 0;
+    background-color: #222;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.3s;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.6);
+  }
+  .side-menu.open {
+    width: 280px;
+  }
+  /* Itens de Navegação*/
+  .side-menu-content button,
+  .dropdown-mobile button,
+  .dropdown-menu-mobile li {
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #fff;
+    display: block;
+    transition: 0.3s;
+    background: none;
+    border: none;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    font-family: "Oswald", sans-serif;
+  }
+
+  /* Efeitos*/
+  .side-menu-content button:hover,
+  .dropdown-mobile button:hover,
+  .dropdown-menu-mobile li:hover {
+    background-color: #383838;
+    color: #fff;
+  }
+
+  /* Botão de Fechar */
+  .close-btn {
+    position: absolute;
+    top: 0;
+    right: 15px;
+    font-size: 36px;
+    color: #fff; /* Cor do X em Branco */
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .close-btn:hover {
+    color: #ccc; /* Cinza claro no hover */
+  }
+
+  /* Dropdown Mobile */
+  .dropdown-menu-mobile {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
+    /* Fundo do submenu um pouco mais claro */
+    background-color: #333;
+  }
+  .dropdown-menu-mobile.show {
+    display: block;
+  }
+
+  /* Botão "Entrar" (para dar destaque) */
+  .side-nav-links button#open-auth-btn-mobile {
+    margin: 20px 25px;
+    width: auto;
+    text-align: center;
+    /* Fundo de destaque (roxo original ou um cinza forte) */
+    background-color: #5b2dff;
+    border-radius: 5px;
+  }
+  .side-nav-links button#open-auth-btn-mobile:hover {
+    background-color: #7b72ff;
+  }
+}
