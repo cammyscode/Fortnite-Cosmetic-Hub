@@ -181,14 +181,13 @@ async function renderPublicUsers() {
       return;
     }
 
-    usersListContainer.innerHTML = ""; // Limpa a mensagem de carregamento
+    usersListContainer.innerHTML = ""; 
 
     data.users.forEach((user) => {
       const card = document.createElement("div");
       card.classList.add("user-card-public");
       card.dataset.userId = user.id;
 
-      // Prévia dos 6 primeiros itens
       const previewHtml = user.preview
         .map(
           (item) =>
@@ -196,7 +195,6 @@ async function renderPublicUsers() {
         )
         .join("");
 
-      // Se não houver itens, mostra uma mensagem
       const inventoryPreview =
         user.preview.length > 0
           ? previewHtml
@@ -220,7 +218,7 @@ async function renderPublicUsers() {
   }
 }
 
-// Função para abrir o modal de inventário completo
+// Abrir o modal de inventário completo
 function openPublicInventoryModal(user) {
   const inventoryGridHtml = user.inventory
     .map(
@@ -269,7 +267,6 @@ function openPublicInventoryModal(user) {
   });
 }
 
-// Expõe a função para ser chamada pelo navigation.js
 window.renderPublicUsers = renderPublicUsers;
 
 // EVENT LISTENERS DE NAVEGAÇÃO

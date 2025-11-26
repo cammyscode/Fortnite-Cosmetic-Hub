@@ -43,10 +43,6 @@ O objetivo principal foi criar uma plataforma completa que simula o ecossistema 
 - Exibir os itens comprados na conta 
 - O usuário pode realizar a devolução dos itens comprados
 - Ao comprar um bundle o usuário recebe todos os itens da bundle n o inventário
-
-
-### Em Desenvolvimento
- 
 - Exibir página de comunidade na qual os usuários podem ver os itens de outros usuários
 
 ---
