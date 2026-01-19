@@ -17,7 +17,6 @@ O objetivo principal foi criar uma plataforma completa que simula o ecossistema 
 - Supabase (Auth + Database + Storage)  
 - API externa: Fortnite API  
 - Cookies + sessão  
-- Vercel (deploy)
 
 ---
 
@@ -42,7 +41,7 @@ O objetivo principal foi criar uma plataforma completa que simula o ecossistema 
 - Inventário do usuário   
 - Exibir os itens comprados na conta 
 - O usuário pode realizar a devolução dos itens comprados
-- Ao comprar um bundle o usuário recebe todos os itens da bundle n o inventário
+- Ao comprar um bundle o usuário recebe todos os itens da bundle no inventário
 - Exibir página de comunidade na qual os usuários podem ver os itens de outros usuários
 
 ---
