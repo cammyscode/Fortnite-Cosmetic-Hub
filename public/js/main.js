@@ -65,6 +65,7 @@ brightness_alert
         }
       });
     }
+    console.log("Mapa de Preços:", shopItemsMap);
 
     // ------------------------------
     // FILTRA OS QUE TEM IMAGEM
