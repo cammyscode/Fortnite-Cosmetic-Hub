@@ -76,15 +76,18 @@ brightness_alert
         ? newCosmetics.data.items
         : []),
     ];
+
     const validItems = allCosmeticsRaw.filter(
       (item) =>
         item?.images &&
         (item.images.icon ||
           item.images.smallIcon ||
           item.images.small ||
-          item.images.large)
+          item.images.large),
     );
 
+    console.log(Array.isArray(itens.data));
+    console.log(itens.data);
     // ------------------------------
     // FILTROS
     // ------------------------------
@@ -97,7 +100,7 @@ brightness_alert
     const searchDate = document.getElementById("search-date");
 
     const typesSet = new Set(
-      validItems.map((item) => item.type?.value).filter(Boolean)
+      validItems.map((item) => item.type?.value).filter(Boolean),
     );
     typesSet.forEach((type) => {
       const option = document.createElement("option");
@@ -107,7 +110,7 @@ brightness_alert
     });
 
     const raritySet = new Set(
-      validItems.map((item) => item.rarity?.value).filter(Boolean)
+      validItems.map((item) => item.rarity?.value).filter(Boolean),
     );
     raritySet.forEach((rarity) => {
       const option = document.createElement("option");
@@ -119,9 +122,11 @@ brightness_alert
     // ------------------------------
     // PAGINAÇÃO
     // ------------------------------
+
     const invResponse = await fetch("/inventory");
     const invData = await invResponse.json();
 
+    console.log("Inventory:", invData);
     function normalizeName(name) {
       return name
         .replace(/[_-]/g, " ")
@@ -129,9 +134,13 @@ brightness_alert
         .trim();
     }
 
-    const ownedItems = new Set(
-      invData.items.map((i) => normalizeName(i.item_name))
-    );
+    let ownedItems = new Set();
+
+    if (invData.ok && invData.items) {
+      ownedItems = new Set(
+        invData.items.map((i) => normalizeName(i.item_name)),
+      );
+    }
 
     let currentPage = 1;
     let perPage = parseInt(document.getElementById("per-page").value);
@@ -144,67 +153,79 @@ brightness_alert
       const selectedRarity = filterRarity.value;
 
       // Aplica filtros
-      const filteredItems = validItems.filter((item) => {
-        const shopStatus = shopItemsMap.get(item.id);
+      const filteredItems = validItems
+        .filter((item) => {
+          const shopStatus = shopItemsMap.get(item.id);
 
-        if (filterNew.checked && !newItemIds.has(item.id)) return false;
-        if (
-          searchName.value &&
-          !(
-            item.name &&
-            item.name
-              .replace(/[_-]/g, " ")
-              .replace(/([a-z])([A-Z])/g, "$1 $2")
-              .includes(searchName.value.toLowerCase())
+          if (filterNew.checked && !newItemIds.has(item.id)) return false;
+          if (
+            searchName.value &&
+            !(
+              item.name &&
+              item.name
+                .toLowerCase()
+                .replace(/[_-]/g, " ")
+                .replace(/([a-z])([A-Z])/g, "$1 $2")
+                .includes(searchName.value.toLowerCase())
+            )
           )
-        )
-          return false;
+            return false;
 
-        if (
-          filterForSale.checked &&
-          (!shopStatus || shopStatus.finalPrice == null)
-        )
-          return false;
-        if (
-          filterOnSale.checked &&
-          (!shopStatus ||
-            !shopStatus.currentlyInShop ||
-            shopStatus.finalPrice >= shopStatus.regularPrice)
-        )
-          return false;
-        if (selectedType && item.type?.value !== selectedType) return false;
-        if (selectedRarity && item.rarity?.value !== selectedRarity)
-          return false;
-        if (searchDate.value) {
-          let filterInputDate;
+          if (
+            filterForSale.checked &&
+            (!shopStatus || shopStatus.finalPrice == null)
+          )
+            return false;
+          if (
+            filterOnSale.checked &&
+            (!shopStatus ||
+              !shopStatus.currentlyInShop ||
+              shopStatus.finalPrice >= shopStatus.regularPrice)
+          )
+            return false;
+          if (selectedType && item.type?.value !== selectedType) return false;
+          if (selectedRarity && item.rarity?.value !== selectedRarity)
+            return false;
+          if (searchDate.value) {
+            let filterInputDate;
 
-          if (searchDate.value.includes("-")) {
-            const parts = searchDate.value.split("-");
-            if (parts[0].length === 4) {
-              // yyyy-mm-dd
-              filterInputDate = new Date(searchDate.value);
+            if (searchDate.value.includes("-")) {
+              const parts = searchDate.value.split("-");
+              if (parts[0].length === 4) {
+                // yyyy-mm-dd
+                filterInputDate = new Date(searchDate.value);
+              } else {
+                // dd-mm-yyyy
+                const [day, month, year] = parts;
+                filterInputDate = new Date(`${year}-${month}-${day}`);
+              }
             } else {
-              // dd-mm-yyyy
-              const [day, month, year] = parts;
-              filterInputDate = new Date(`${year}-${month}-${day}`);
+              filterInputDate = new Date(searchDate.value);
             }
-          } else {
-            filterInputDate = new Date(searchDate.value);
+
+            const itemDate = new Date(item.added || 0);
+
+            // Comparar apenas ano, mês e dia
+            const sameDay =
+              itemDate.getFullYear() === filterInputDate.getFullYear() &&
+              itemDate.getMonth() === filterInputDate.getMonth() &&
+              itemDate.getDate() === filterInputDate.getDate();
+
+            if (!sameDay) return false;
           }
 
-          const itemDate = new Date(item.added || 0);
+          return true;
+        })
+        .sort((a, b) => {
+          const aHasPrice = shopItemsMap.has(a.id);
+          const bHasPrice = shopItemsMap.has(b.id);
 
-          // Comparar apenas ano, mês e dia
-          const sameDay =
-            itemDate.getFullYear() === filterInputDate.getFullYear() &&
-            itemDate.getMonth() === filterInputDate.getMonth() &&
-            itemDate.getDate() === filterInputDate.getDate();
+          // itens com preço primeiro
+          if (aHasPrice && !bHasPrice) return -1;
+          if (!aHasPrice && bHasPrice) return 1;
 
-          if (!sameDay) return false;
-        }
-
-        return true;
-      });
+          return 0;
+        });
 
       // Paginação
       const start = (currentPage - 1) * perPage;
@@ -394,7 +415,7 @@ brightness_alert
       const pageInfo = document.getElementById("page-info");
       if (pageInfo)
         pageInfo.textContent = `Página ${currentPage} / ${Math.ceil(
-          filteredItems.length / perPage
+          filteredItems.length / perPage,
         )}`;
     };
 
@@ -412,7 +433,7 @@ brightness_alert
       el.addEventListener("change", () => {
         currentPage = 1;
         renderPage();
-      })
+      }),
     );
     searchName.addEventListener("input", () => {
       currentPage = 1;
@@ -441,8 +462,13 @@ brightness_alert
     // Renderiza primeira página
     renderPage();
   } catch (error) {
-    gallery.innerHTML = `<p style="color:red;"><i class="fa-solid fa-x"></i> Erro ao carregar cosméticos.</p>`;
-    console.error(error);
+    console.error("ERRO:", error);
+    console.error("STACK:", error.stack);
+
+    gallery.innerHTML = `<p style="color:red;">
+      <i class="fa-solid fa-x"></i>
+      Erro ao carregar cosméticos.
+    </p>`;
   }
 }
 
