@@ -1,5 +1,5 @@
 # Fortnite Cosmetic Hub — Full Stack Project  
-Este projeto, Fortnite Cosmetic Hub, é uma aplicação Full-Stack desenvolvida como prova de conceito para um desafio técnico de estágio, demonstrando conhecimento em integração de API de terceiros, autenticação segura baseada em cookies/sessão e manipulação dinâmica de dados no lado do servidor.
+Este projeto, Fortnite Cosmetic Hub, é uma aplicação Full-Stack desenvolvida como prova de conceito para um desafio técnico acadêmico, demonstrando conhecimento em integração de API de terceiros, autenticação segura baseada em cookies/sessão e manipulação dinâmica de dados no lado do servidor.
 O objetivo principal foi criar uma plataforma completa que simula o ecossistema de gerenciamento de conta e comércio de um jogo. O sistema consome a Fortnite API para exibir o catálogo atual de cosméticos e utiliza Node.js/Express com Supabase para gerenciar o estado do usuário, protegendo rotas e inserindo dados de perfil e saldo (V-Bucks) na base de dados após o cadastro.
 
 ---
